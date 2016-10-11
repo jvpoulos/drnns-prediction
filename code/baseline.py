@@ -35,13 +35,13 @@ for train_index, test_index in tscv.split(X_train):
 
 # Define data and learning parameters
 batch_size=64
-nb_epoch = 2
+nb_epoch = 5
 nb_hidden = 32
 
 nb_timesteps = X_train_cv.shape[0] # use all inputs/timesteps for classification
 nb_features = X_train_cv.shape[1]
 
-output_dim = X_train_cv.shape[0]
+output_dim = nb_timesteps
 
 # Reshape X's to three dimensions
 # Should have shape (batch_size, nb_timesteps, nb_features)
@@ -51,8 +51,7 @@ X_train_cv = np.expand_dims(X_train_cv, axis=0)
 
 X_val = csr_matrix.toarray(X_val)
 
-X_val = np.pad(X_val, ((nb_timesteps-X_val.shape[0],0), (0,0)), mode='constant', constant_values=0)
-set_trace()
+X_val = np.pad(X_val, ((nb_timesteps-X_val.shape[0],0), (0,0)), mode='constant', constant_values=0) # pad with zeros
 
 X_val = np.expand_dims(X_val, axis=0)
 
@@ -63,7 +62,8 @@ print('X_val shape:', X_val.shape)
 # Should have shape (batch_size, nb_classes)
 
 y_train_cv = np.expand_dims(y_train_cv, axis=0)
-## Pad y_val
+
+y_val = np.pad(y_val, ((nb_timesteps-y_val.shape[0],0)), mode='constant', constant_values=0) # pad with zeros
 y_val = np.expand_dims(y_val, axis=0)
 
 print('y_train_cv shape:', y_train_cv.shape)
