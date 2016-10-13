@@ -1,4 +1,4 @@
-# Train baseline 3 GRU layer-stacked RNN for sequence classification
+# Train baseline 3 GRU layer-stacked "stateful" RNN for sequence classification
 # https://keras.io/getting-started/sequential-model-guide/#examples
 
 
@@ -25,7 +25,6 @@ X_test = pkl.load(open('data/X_test.np', 'rb'))
 y_train = pkl.load(open('data/y_train.np', 'rb'))
 y_test = pkl.load(open('data/y_test.np', 'rb'))
 
- 
 #Time series cross-validation 
 tscv = TimeSeriesSplit(n_splits=3)
 
@@ -34,7 +33,7 @@ for train_index, test_index in tscv.split(X_train):
 	y_train_cv, y_val = y_train[train_index], y_train[test_index]
 
 # Define data and learning parameters
-batch_size=64
+batch_size= 39 # must be multiple of sample size
 nb_epoch = 2 # increase this later
 nb_hidden = 32
 nb_classes = 2
@@ -73,16 +72,18 @@ print('y_train_cv shape:', y_train_cv.shape)
 print('y_val shape:', y_val.shape)
 
 # Initiate sequential model
-# expected input data shape: (batch_size, timesteps, nb_features)
 
 model = Sequential()
 
 # Stack layers
-model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
-model.add(GRU(nb_hidden, return_sequences=True,
-               input_shape=(nb_timesteps, nb_features)))  
-model.add(GRU(nb_hidden, return_sequences=True))  
-model.add(GRU(nb_hidden))  
+# expected input batch shape: (batch_size, nb_timesteps, nb_features)
+# note that we have to provide the full batch_input_shape since the network is stateful.
+# the sample of index i in batch k is the follow-up for the sample i in batch k-1.
+model.add(Masking(mask_value=0., batch_input_shape=(batch_size, nb_timesteps, nb_features))) # embedding for variable input lengths
+model.add(GRU(nb_hidden, return_sequences=True, stateful=True,
+               batch_input_shape=(batch_size, nb_timesteps, nb_features)))  
+model.add(GRU(nb_hidden, return_sequences=True, stateful=True))  
+model.add(GRU(nb_hidden, stateful=True))  
 model.add(Dense(output_dim, activation='softmax'))
 
 # Configure learning process
