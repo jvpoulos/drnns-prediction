@@ -26,7 +26,7 @@ y_train = pkl.load(open('data/y_train.np', 'rb'))
 y_test = pkl.load(open('data/y_test.np', 'rb'))
 
  
-# Time series cross-validation 
+#Time series cross-validation 
 tscv = TimeSeriesSplit(n_splits=3)
 
 for train_index, test_index in tscv.split(X_train):
@@ -35,36 +35,39 @@ for train_index, test_index in tscv.split(X_train):
 
 # Define data and learning parameters
 batch_size=64
-nb_epoch = 5
+nb_epoch = 2 # increase this later
 nb_hidden = 32
+nb_classes = 2
 
-nb_timesteps = X_train_cv.shape[0] # use all inputs/timesteps for classification
+nb_timesteps = 7 # use past week for classification
 nb_features = X_train_cv.shape[1]
 
-output_dim = nb_timesteps
+output_dim = 2
 
-# Reshape X's to three dimensions
-# Should have shape (batch_size, nb_timesteps, nb_features)
+# # Reshape X's to three dimensions
+# # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train_cv = csr_matrix.toarray(X_train_cv) # convert from sparse matrix to N dimensional array
-X_train_cv = np.expand_dims(X_train_cv, axis=0)
+
+X_train_cv = np.resize(X_train_cv, (X_train_cv.shape[0], nb_timesteps, X_train_cv.shape[1]))
 
 X_val = csr_matrix.toarray(X_val)
 
-X_val = np.pad(X_val, ((nb_timesteps-X_val.shape[0],0), (0,0)), mode='constant', constant_values=0) # pad with zeros
+X_val = np.pad(X_val, ((X_train_cv.shape[0]-X_val.shape[0],0), (0,0)), mode='constant', constant_values=0) # pad with zeros
 
-X_val = np.expand_dims(X_val, axis=0)
+X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 
 print('X_train_cv shape:', X_train_cv.shape)
 print('X_val shape:', X_val.shape)
 
 # Reshape y's to two dimensions
-# Should have shape (batch_size, nb_classes)
+# Should have shape (batch_size, output_dim)
 
-y_train_cv = np.expand_dims(y_train_cv, axis=0)
+y_train_cv = np.resize(y_train_cv, (X_train_cv.shape[0], output_dim))
 
-y_val = np.pad(y_val, ((nb_timesteps-y_val.shape[0],0)), mode='constant', constant_values=0) # pad with zeros
-y_val = np.expand_dims(y_val, axis=0)
+y_val = np.pad(y_val, ((y_train_cv.shape[0] - y_val.shape[0],0)), mode='constant', constant_values=0) # pad with zeros
+
+y_val = np.resize(y_val, (X_val.shape[0], output_dim))
 
 print('y_train_cv shape:', y_train_cv.shape)
 print('y_val shape:', y_val.shape)
