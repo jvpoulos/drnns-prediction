@@ -1,6 +1,7 @@
 # Train baseline 3 GRU layer-stacked "stateful" RNN for sequence classification
 # https://keras.io/getting-started/sequential-model-guide/#examples
 
+import sys, time
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
@@ -88,6 +89,8 @@ for param_idx in xrange(params_matrix.shape[0]):
     dropout, activation, nb_hidden, initialization)
 
   print model_str
+
+  start_time = time.time() # start timer
 
   # Initiate sequential model
   model = Sequential()
