@@ -1,12 +1,12 @@
 # Train baseline 3 GRU layer-stacked "stateful" RNN for sequence classification
 # https://keras.io/getting-started/sequential-model-guide/#examples
 
-
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import EarlyStopping
 import numpy as np
+from itertools import product
 import cPickle as pkl
 from scipy.sparse import csr_matrix
 
@@ -30,7 +30,7 @@ X_train = X_train[1:X_train.shape[0]] # drop first sample so batch sizes are eve
 y_train = y_train[1:y_train.shape[0]]
 
 # Define cross-validation parameters
-params_dict = pickle.load(open('params_dict.pkl', 'rb'))
+params_dict = pkl.load(open('params_dict.pkl', 'rb'))
 batch_sizes = params_dict['batch_sizes']
 dropouts = params_dict['dropouts']
 activations = params_dict['activations']
@@ -78,19 +78,23 @@ params_matrix = np.column_stack((params_matrix,
                                  np.zeros(params_matrix.shape[0]),
                                  np.zeros(params_matrix.shape[0])))
 
-val_acc = []
-val_loss = []
+accuracies = []
+losses = []
 running_time = []
 
 for param_idx in xrange(params_matrix.shape[0]):
-    batch_size = int(params_matrix[param_idx, 0])
-    dropout = int(params_matrix[param_idx, 1])
-    activation = int(params_matrix[param_idx, 2])
-    nb_hidden = int(params_matrix[param_idx, 3])
-    inits = int(params_matrix[param_idx, 4])
+  batch_size = int(params_matrix[param_idx, 0])
+  dropout = int(params_matrix[param_idx, 1])
+  activation = params_matrix[param_idx, 2]
+  nb_hidden = int(params_matrix[param_idx, 3])
+  initialization = params_matrix[param_idx, 4]
+
+  model_str = 'Batch size: {}, dropout: {}, activation: {}, no. hidden: {}, initialization: {}'.format(batch_size,
+    dropout, activation, nb_hidden, initialization)
+
+  print model_str
 
   # Initiate sequential model
-
   model = Sequential()
 
   # Stack layers
@@ -98,12 +102,12 @@ for param_idx in xrange(params_matrix.shape[0]):
   # note that we have to provide the full batch_input_shape since the network is stateful.
   # the sample of index i in batch k is the follow-up for the sample i in batch k-1.
   model.add(Masking(mask_value=0., batch_input_shape=(batch_size, nb_timesteps, nb_features))) # embedding for variable input lengths
-  model.add(GRU(nb_hidden, return_sequences=True, stateful=True,
+  model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization,
                  batch_input_shape=(batch_size, nb_timesteps, nb_features)))
   model.add(Dropout(dropout))  
-  model.add(GRU(nb_hidden, return_sequences=True, stateful=True))  
+  model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
   model.add(Dropout(dropout)) 
-  model.add(GRU(nb_hidden, stateful=True))  
+  model.add(GRU(nb_hidden, stateful=True, init=initialization))  
   model.add(Dropout(dropout)) 
   model.add(Dense(output_dim, activation=activation))
 
@@ -133,6 +137,14 @@ for param_idx in xrange(params_matrix.shape[0]):
     score[0],
       model.metrics_names[1],
       score[1])
+
+  accuracies.append(val_acc)
+  losses.append(val_loss)
+  running_time.append(np.around((time.time() - start_time) / 60., 1))
+
+# Save params matrix to disk
+filename =  'baseline'
+params_matrix.dump('{}_results.np'.format(filename))
 
 # # Generate predictons on new data
 
