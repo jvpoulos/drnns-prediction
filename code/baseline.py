@@ -39,13 +39,8 @@ inits = params_dict['inits']
 
 validation_split = 0.2
 
-#batch_size= 23 # must be multiple of sample size
-
-#dropout = 0.5
-
 # Define network structure
 nb_epoch = 10 # max no. epochs
-#nb_hidden = 32
 nb_classes = 2
 nb_features = X_train.shape[1]
 
@@ -138,8 +133,8 @@ for param_idx in xrange(params_matrix.shape[0]):
       model.metrics_names[1],
       score[1])
 
-  accuracies.append(val_acc)
-  losses.append(val_loss)
+  accuracies.append(score[1])
+  losses.append(score[0])
   running_time.append(np.around((time.time() - start_time) / 60., 1))
 
 # Save params matrix to disk
