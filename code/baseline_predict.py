@@ -2,7 +2,7 @@
 
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 from keras.utils.visualize_util import plot
-from keras.models import Sequential, load_model
+from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import EarlyStopping
 import numpy as np
@@ -26,6 +26,9 @@ y_test = pkl.load(open('data/y_test.np', 'rb'))
 
 X_train = X_train[1:X_train.shape[0]] # drop first sample so batch sizes are even
 y_train = y_train[1:y_train.shape[0]]
+
+X_test = X_test[1:X_test.shape[0]] # drop first sample so batch sizes are even
+y_test = y_test[1:y_test.shape[0]]
 
 # Define network structure
 
@@ -99,15 +102,17 @@ model.compile(optimizer='rmsprop',
 
 # Iterate on training data in batches
 
-early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+early_stopping = EarlyStopping(monitor='loss', patience=2)
 
 model.fit(X_train, y_train,
           batch_size=batch_size, nb_epoch=nb_epoch,
           shuffle='batch', # shuffle in batch-sized chunks
-          callbacks=[early_stopping]) # stop early if validation loss not improving after 2 epochs
+          callbacks=[early_stopping]) # stop early if training loss not improving after 2 epochs
 
-model.save('best_baseline_model.h5')  # creates a HDF5 file 
-# model = load_model('best_baseline_model.h5')
+# Plot graph of model
+plot(model, to_file='baseline_model.png',
+  show_shapes = True,
+  show_layer_names = False)
 
 # Evaluate test set performance
 
@@ -120,6 +125,3 @@ scores = model.evaluate(X_test, y_test, batch_size=batch_size)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 plot_ROC(y_test[:, 0], y_score[:, 0])
-
-# Save graph of model
-plot(model, to_file='best_baseline_model.png')

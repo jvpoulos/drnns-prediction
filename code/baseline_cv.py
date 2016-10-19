@@ -16,6 +16,8 @@ tf.python.control_flow_ops = tf
 
 # Load and preprocessed data
 
+print('Loading and reading data')
+
 X_train = pkl.load(open('data/X_train.np', 'rb'))
 X_test = pkl.load(open('data/X_test.np', 'rb'))
 
@@ -89,6 +91,9 @@ for param_idx in xrange(params_matrix.shape[0]):
   start_time = time.time() # start timer
 
   # Initiate sequential model
+
+  print('Initializing model')
+
   model = Sequential()
 
   # Stack layers
@@ -122,6 +127,8 @@ for param_idx in xrange(params_matrix.shape[0]):
             validation_split = validation_split) # use last 20% of data for validation set
 
   # Evaluate best model performance on validation set
+
+  print('Evaluating results')
 
   score = model.evaluate(X_train[X_train.shape[0]-(X_train.shape[0]*validation_split):X_train.shape[0]], 
     y_train[y_train.shape[0]-(y_train.shape[0]*validation_split):y_train.shape[0]], 
