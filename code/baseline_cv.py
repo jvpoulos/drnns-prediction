@@ -1,4 +1,4 @@
-# Train baseline 3 GRU layer-stacked "stateful" RNN for sequence classification
+# Cross-validate baseline 3 GRU layer-stacked "stateful" RNN for sequence classification
 # https://keras.io/getting-started/sequential-model-guide/#examples
 
 import sys, time
@@ -13,11 +13,6 @@ from scipy.sparse import csr_matrix
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
-
-def set_trace():
-    from IPython.core.debugger import Pdb
-    import sys
-    Pdb(color_scheme='Linux').set_trace(sys._getframe().f_back)
 
 # Load and preprocessed data
 
@@ -66,6 +61,7 @@ y_train = np.resize(y_train, (X_train.shape[0], output_dim))
 print('y_train shape:', y_train.shape)
 
 # Matrix to store results
+
 params_matrix = np.array([x for x in product(batch_sizes, dropouts, activations, hidden_nodes, inits)])
 params_matrix = np.column_stack((params_matrix,
                                  np.zeros(params_matrix.shape[0]),
@@ -80,7 +76,7 @@ running_time = []
 
 for param_idx in xrange(params_matrix.shape[0]):
   batch_size = int(params_matrix[param_idx, 0])
-  dropout = int(params_matrix[param_idx, 1])
+  dropout = params_matrix[param_idx, 1]
   activation = params_matrix[param_idx, 2]
   nb_hidden = int(params_matrix[param_idx, 3])
   initialization = params_matrix[param_idx, 4]
@@ -140,11 +136,11 @@ for param_idx in xrange(params_matrix.shape[0]):
   losses.append(score[0])
   running_time.append(np.around((time.time() - start_time) / 60., 1))
 
+# Save results to parameter matrix
+params_matrix[param_idx, 5] = accuracies
+params_matrix[param_idx, 6] = losses
+params_matrix[param_idx, 7] = running_time
+
 # Save params matrix to disk
 filename =  'baseline'
 params_matrix.dump('{}_results.np'.format(filename))
-
-# # Generate predictons on new data
-
-# classes = model.predict_classes(X_test, batch_size=batch_size)
-# proba = model.predict_proba(X_test, batch_size=batch_size)

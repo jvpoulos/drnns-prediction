@@ -10,8 +10,7 @@ p5
 tp6
 sS'dropouts'
 p7
-(I0
-F0.25
+(F0.25
 F0.5
 tp8
 sS'inits'
@@ -27,7 +26,7 @@ sS'batch_sizes'
 p14
 (I23
 I46
-I92
+I161
 tp15
 sS'hidden_nodes'
 p16
