@@ -44,7 +44,7 @@ nb_features = X_train.shape[1]
 
 nb_timesteps = 14 # use past two weeks for classification
 
-output_dim = 2
+output_dim = 50
 
 # # Reshape X to three dimensions
 # # Should have shape (batch_size, nb_timesteps, nb_features)
