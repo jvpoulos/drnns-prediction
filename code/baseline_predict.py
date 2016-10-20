@@ -9,7 +9,7 @@ import numpy as np
 from itertools import product
 import cPickle as pkl
 from scipy.sparse import csr_matrix
-from utils import plot_ROC
+from utils import plot_ROC, set_trace
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -24,15 +24,12 @@ X_test = pkl.load(open('data/X_test.np', 'rb'))
 y_train = pkl.load(open('data/y_train.np', 'rb'))
 y_test = pkl.load(open('data/y_test.np', 'rb'))
 
-X_train = X_train[1:X_train.shape[0]] # drop first sample so batch sizes are even
+X_train = X_train[1:X_train.shape[0]] # drop first sample so batch size is divisible 
 y_train = y_train[1:y_train.shape[0]]
-
-X_test = X_test[1:X_test.shape[0]] # drop first sample so batch sizes are even
-y_test = y_test[1:y_test.shape[0]]
 
 # Define network structure
 
-nb_epoch = 100 # max no. epochs
+nb_epoch = 50 # max no. epochs
 nb_classes = 2
 nb_features = X_train.shape[1]
 
@@ -42,7 +39,7 @@ output_dim = 2
 
 # Define cross-validated model parameters
 
-batch_size = 46
+batch_size = 14
 dropout = 0.25
 activation = 'sigmoid'
 nb_hidden = 32
@@ -61,7 +58,7 @@ X_test = csr_matrix.toarray(X_test) # convert from sparse matrix to N dimensiona
 
 X_test = np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
 
-print('X_test shape:', X_train.shape)
+print('X_test shape:', X_test.shape)
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
@@ -117,11 +114,11 @@ plot(model, to_file='baseline_model.png',
 # Evaluate test set performance
 
 print('Predicting on test data')
-y_score = model.predict(X_test)
+y_score = model.predict(X_test, batch_size=batch_size) # ensure test set is divisible by batch size
 
 print('Evaluating results')
 
-scores = model.evaluate(X_test, y_test, batch_size=batch_size)
+scores = model.evaluate(X_test, y_test, batch_size=batch_size) # ensure test set is divisible by batch size
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 plot_ROC(y_test[:, 0], y_score[:, 0])
