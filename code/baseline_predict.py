@@ -121,7 +121,4 @@ print('Evaluating results')
 scores = model.evaluate(X_test, y_test, batch_size=batch_size) # ensure test set is divisible by batch size
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
-print y_score.shape
-print y_test.shape
-set_trace()
 plot_ROC(y_test[:, 0], y_score[:, 0])
