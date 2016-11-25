@@ -130,7 +130,7 @@ plot(model, to_file='results/final_model.png', # Plot graph of model
 
 # Training 
 
-early_stopping = EarlyStopping(monitor='loss', patience=1)
+early_stopping = EarlyStopping(monitor='binary_accuracy', patience=1)
 
 print('Training')
 for i in range(epochs):
