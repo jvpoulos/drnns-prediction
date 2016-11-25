@@ -3,7 +3,8 @@
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 from keras.utils.visualize_util import plot
 from keras.models import Sequential
-from keras.layers import GRU, Dense, Masking, Dropout, Activation, advanced_activations
+from keras.layers import GRU, Dense, Masking, Dropout, Activation
+from keras.layers.advanced_activations import ELU
 from keras.callbacks import EarlyStopping
 import numpy as np
 from itertools import product
@@ -37,8 +38,8 @@ else:
 
 # Define network structure
 
-epochs = 3 
-nb_timesteps = 14 
+epochs = 5
+nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
 output_dim = 1
@@ -97,6 +98,12 @@ model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initializati
 model.add(Dropout(dropout))
 model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
 model.add(Dropout(dropout))
+model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
+model.add(Dropout(dropout))
+model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
+model.add(Dropout(dropout))
+model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
+model.add(Dropout(dropout))
 model.add(GRU(nb_hidden, stateful=True, init=initialization))  
 model.add(Dropout(dropout)) 
 model.add(Dense(output_dim, activation=activation))
@@ -106,10 +113,6 @@ model.add(Dense(output_dim, activation=activation))
 model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['binary_accuracy'])
-
-plot(model, to_file='results/baseline_model.png', # Plot graph of model
-  show_shapes = True,
-  show_layer_names = False)
 
 # Training /validation
 
