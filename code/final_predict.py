@@ -1,6 +1,7 @@
 ## Loads best checkpointed model and makes prediciton on test set
 
 from __future__ import print_function
+import sys
 import numpy as np
 from itertools import product
 import cPickle as pkl
@@ -24,15 +25,6 @@ print('Load saved test data')
 X_test = pkl.load(open('data/X_test.np', 'rb'))
 
 y_test = pkl.load(open('data/y_test.np', 'rb'))
-
-# Label shift
-
-lahead = 0 # number of days ahead that are used to make the prediction
-
-if lahead!=0:
-  y_test = np.roll(y_test,-lahead,axis=0)
-else:
-  pass
 
 # Define network structure
 
@@ -112,7 +104,7 @@ plot(model, to_file='results/final_model.png', # Plot graph of model
 model_to_dot(model,show_shapes=True,show_layer_names = False).write('results/final_model.dot', format='raw', prog='dot') # write to dot file
 
 # Load weights
-model.load_weights("results/weights/weights-00-0.5185.hdf5")
+model.load_weights(sys.argv[-1])
 
 # Configure learning process
 
