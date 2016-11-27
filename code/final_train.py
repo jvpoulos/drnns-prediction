@@ -8,10 +8,11 @@ import cPickle as pkl
 from scipy.sparse import csr_matrix
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 
+
 from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint, TensorBoard
+from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint, TensorBoard,CSVLogger
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -33,7 +34,7 @@ y_train = y_train[1:y_train.shape[0]]
 
 # Define network structure
 
-epochs = 25
+epochs = 2
 nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
@@ -117,8 +118,11 @@ model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
+# Prepare callbacks
 filepath="results/weights/weights-{val_acc:.4f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
+
+CSVLogger('results/training-log.csv', separator=',', append=True)
 
 # Training 
 
