@@ -7,10 +7,9 @@ import cPickle as pkl
 from scipy.sparse import csr_matrix
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 
-from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint, TensorBoard, CSVLogger
+from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,TensorBoard,CSVLogger
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -32,7 +31,7 @@ y_train = y_train[1:y_train.shape[0]]
 
 # Define network structure
 
-epochs = 2
+epochs = 150
 nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
@@ -126,14 +125,14 @@ tensorboard = TensorBoard(log_dir='results/logs', histogram_freq=0, write_graph=
 
 print('Training')
 for i in range(epochs):
-    print('Epoch', i+1, '/', epochs)
     csv_logger = CSVLogger('results/training-log.csv', separator=',', append=True)
+    print('Epoch', i+1, '/', epochs)
     model.fit(X_train,
               y_train,
               batch_size=batch_size,
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer, csv_logger, tensorboard], 
+              callbacks=[checkpointer,csv_logger,tensorboard], 
               validation_data=(X_test, y_test))
     model.reset_states()

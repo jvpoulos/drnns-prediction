@@ -28,16 +28,6 @@ y_test = pkl.load(open('data/y_test.np', 'rb'))
 X_train = X_train[1:X_train.shape[0]] # drop first sample so batch size is divisible 
 y_train = y_train[1:y_train.shape[0]]
 
-# Label shift
-
-lahead = 3 # number of days ahead that are used to make the prediction
-
-if lahead!=0:
-  y_train = np.roll(y_train,-lahead,axis=0)
-  y_test = np.roll(y_test,-lahead,axis=0)
-else:
-  pass
-
 # Define network structure
 
 epochs = 25 
