@@ -117,7 +117,7 @@ model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-filepath="results/weights/weights-{epoch:02d}-{val_acc:.4f}.hdf5"
+filepath="results/weights/weights-{val_acc:.4f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 # Training 

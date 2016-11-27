@@ -112,7 +112,7 @@ plot(model, to_file='results/final_model.png', # Plot graph of model
 model_to_dot(model,show_shapes=True,show_layer_names = False).write('results/final_model.dot', format='raw', prog='dot') # write to dot file
 
 # Load weights
-model.load_weights("results/weights/weights-00-0.5079.hdf5")
+model.load_weights("results/weights/weights-00-0.5185.hdf5")
 
 # Configure learning process
 
