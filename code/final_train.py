@@ -1,13 +1,11 @@
 ## Trains best final model and saves weights at each epoch
 
 from __future__ import print_function
-from sklearn.model_selection import TimeSeriesSplit, train_test_split
 import numpy as np
 from itertools import product
 import cPickle as pkl
 from scipy.sparse import csr_matrix
 from sklearn.metrics import roc_curve, auc, roc_auc_score
-
 
 from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
@@ -122,19 +120,18 @@ model.compile(optimizer='rmsprop',
 filepath="results/weights/weights-{val_acc:.4f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
-CSVLogger('results/training-log.csv', separator=',', append=True)
-
 # Training 
 
 print('Training')
 for i in range(epochs):
     print('Epoch', i+1, '/', epochs)
+    csv_logger = CSVLogger('results/training-log.csv', separator=',', append=True)
     model.fit(X_train,
               y_train,
               batch_size=batch_size,
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer], 
+              callbacks=[checkpointer, csv_logger], 
               validation_data=(X_test, y_test))
     model.reset_states()
