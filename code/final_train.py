@@ -10,7 +10,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint, TensorBoard,CSVLogger
+from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint, TensorBoard, CSVLogger
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -120,6 +120,8 @@ model.compile(optimizer='rmsprop',
 filepath="results/weights/weights-{val_acc:.4f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
+tensorboard = TensorBoard(log_dir='results/logs', histogram_freq=0, write_graph=True, write_images=True)
+
 # Training 
 
 print('Training')
@@ -132,6 +134,6 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer, csv_logger], 
+              callbacks=[checkpointer, csv_logger, tensorboard], 
               validation_data=(X_test, y_test))
     model.reset_states()
