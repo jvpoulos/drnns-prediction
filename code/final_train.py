@@ -1,52 +1,45 @@
-# # Try different hyperparameters and network structure on validation set
+## Trains best final model and saves weights at each epoch
 
+from __future__ import print_function
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
-from keras.utils.visualize_util import plot
-from keras.models import Sequential
-from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.layers.advanced_activations import ELU
-from keras.callbacks import EarlyStopping
 import numpy as np
 from itertools import product
 import cPickle as pkl
 from scipy.sparse import csr_matrix
-from utils import set_trace, plot_ROC
 from sklearn.metrics import roc_curve, auc, roc_auc_score
+
+from keras.utils.visualize_util import plot, model_to_dot
+from keras.models import Sequential
+from keras.layers import GRU, Dense, Masking, Dropout, Activation
+from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint, TensorBoard
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
+
+from utils import set_trace, plot_ROC
 
 # Load saved data
 
 print('Load saved data')
 
 X_train = pkl.load(open('data/X_train.np', 'rb'))
+X_test = pkl.load(open('data/X_test.np', 'rb'))
 
 y_train = pkl.load(open('data/y_train.np', 'rb'))
+y_test = pkl.load(open('data/y_test.np', 'rb'))
 
 X_train = X_train[1:X_train.shape[0]] # drop first sample so batch size is divisible 
 y_train = y_train[1:y_train.shape[0]]
 
-# Label shift
-
-lahead = 0 # number of days ahead that are used to make the prediction
-
-if lahead!=0:
-  y_train = np.roll(y_train,-lahead,axis=0)
-else:
-  pass
-
 # Define network structure
 
-epochs = 5
+epochs = 25
 nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
 output_dim = 1
 
 # Define cross-validated model parameters
-
-validation_split=0.2
 
 batch_size = 14
 dropout = 0.25
@@ -63,12 +56,22 @@ X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
 
 print('X_train shape:', X_train.shape)
 
+X_test = csr_matrix.toarray(X_test) # convert from sparse matrix to N dimensional array
+
+X_test = np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
+
+print('X_test shape:', X_test.shape)
+
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (X_train.shape[0], output_dim))
 
 print('y_train shape:', y_train.shape)
+
+y_test = np.resize(y_test, (X_test.shape[0], output_dim))
+
+print('y_test shape:', y_test.shape)
 
 # Initiate sequential model
 
@@ -112,13 +115,14 @@ model.add(Dense(output_dim, activation=activation))
 
 model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
-              metrics=['binary_accuracy'])
+              metrics=['accuracy'])
 
-# Training /validation
+filepath="results/weights/weights-{epoch:02d}-{val_acc:.4f}.hdf5"
+checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
-early_stopping = EarlyStopping(monitor='loss', patience=1)
+# Training 
 
-print('Training/validation')
+print('Training')
 for i in range(epochs):
     print('Epoch', i+1, '/', epochs)
     model.fit(X_train,
@@ -127,6 +131,6 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[early_stopping], # stop early if training loss not improving after 1 epoch
-              validation_split=validation_split)   # use last 20% of data for validation set
+              callbacks=[checkpointer], 
+              validation_data=(X_test, y_test))
     model.reset_states()
