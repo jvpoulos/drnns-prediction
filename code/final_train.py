@@ -125,7 +125,7 @@ model.compile(optimizer='rmsprop',
               metrics=['accuracy'])
 
 # Prepare callbacks
-filepath="results/weights/weights-{val_acc:.4f}.hdf5"
+filepath="results/weights/weights-{val_acc:.5f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 lrate = LearningRateScheduler(step_decay)
 
