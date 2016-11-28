@@ -39,7 +39,7 @@ output_dim = 1
 # Define cross-validated model parameters
 
 learning_rate = 0.01
-decay = 1e-6
+decay_rate = 1e-4
   
 batch_size = 14
 dropout = 0.50
@@ -114,7 +114,7 @@ model.load_weights(sys.argv[-1])
 
 # Configure learning process
 
-rmsprop = RMSprop(lr=learning_rate, decay=decay)
+rmsprop = RMSprop(lr=learning_rate, decay=decay_rate)
 
 model.compile(optimizer=rmsprop,
               loss='binary_crossentropy',

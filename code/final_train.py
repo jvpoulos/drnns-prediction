@@ -44,7 +44,7 @@ output_dim = 1
 # Define cross-validated model parameters
 
 learning_rate = 0.01
-decay = 1e-6
+decay_rate = 1e-4
 
 batch_size = 14
 dropout = 0.25
@@ -118,13 +118,14 @@ model.add(Dense(output_dim, activation=activation))
 
 # Configure learning process
 
-rmsprop = RMSprop(lr=learning_rate, decay=decay)
+rmsprop = RMSprop(lr=learning_rate, decay=decay_rate)
 
 model.compile(optimizer=rmsprop,
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-# Prepare callbacks
+# Prepare model checkpoints and callbacks
+
 filepath="results/weights/weights-{val_acc:.5f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
