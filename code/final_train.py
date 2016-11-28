@@ -44,7 +44,7 @@ output_dim = 1
 def step_decay(i): # learning rate schedule
   initial_lrate = 0.1
   drop = 0.1
-  epochs_drop = 20
+  epochs_drop = 5
   lrate = initial_lrate * math.pow(drop, math.floor((1+(i+1))/epochs_drop))
   return lrate
 
