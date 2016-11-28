@@ -1,6 +1,7 @@
 ## Trains best final model and saves weights at each epoch
 
 from __future__ import print_function
+import sys
 import math
 import numpy as np
 from itertools import product
@@ -32,7 +33,7 @@ y_train = y_train[1:y_train.shape[0]]
 
 # Define network structure
 
-epochs = 250
+epochs = sys.argv[-1]
 nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
@@ -41,14 +42,14 @@ output_dim = 1
 # Define cross-validated model parameters
 
 def step_decay(i): # learning rate schedule
-  initial_lrate = 0.01
-  drop = 0.5
-  epochs_drop = 10.0
+  initial_lrate = 0.1
+  drop = 0.1
+  epochs_drop = 20
   lrate = initial_lrate * math.pow(drop, math.floor((1+(i+1))/epochs_drop))
   return lrate
 
 batch_size = 14
-dropout = 0.50
+dropout = 0.25
 activation = 'sigmoid'
 nb_hidden = 128
 initialization = 'glorot_normal'
