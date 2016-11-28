@@ -39,7 +39,7 @@ output_dim = 1
 # Define cross-validated model parameters
 
 learning_rate = 0.01
-decay_rate = 1e-4
+decay_rate = 1e-3
   
 batch_size = 14
 dropout = 0.50
