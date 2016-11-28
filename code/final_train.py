@@ -43,11 +43,11 @@ output_dim = 1
 
 # Define cross-validated model parameters
 
-learning_rate = 0.01
-decay_rate = 1e-3
+learning_rate = 0.1
+decay_rate = 1e-2
 
 batch_size = 14
-dropout = 0.5
+dropout = 0.35
 activation = 'sigmoid'
 nb_hidden = 128
 initialization = 'glorot_normal'
