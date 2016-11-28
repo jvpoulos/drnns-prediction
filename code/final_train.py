@@ -11,7 +11,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger,LearningRateScheduler
+from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -41,12 +41,8 @@ output_dim = 1
 
 # Define cross-validated model parameters
 
-def step_decay(i): # learning rate schedule
-  initial_lrate = 0.95
-  drop = 0.5
-  epochs_drop = 5
-  lrate = initial_lrate * math.pow(drop, math.floor((1+(i+1))/epochs_drop))
-  return lrate
+learning_rate = 0.01
+decay = 1e-6
 
 batch_size = 14
 dropout = 0.25
@@ -120,14 +116,21 @@ model.add(Dense(output_dim, activation=activation))
 
 # Configure learning process
 
-model.compile(optimizer='rmsprop',
+rmsprop = RMSprop(lr=learning_rate, decay=decay)
+
+model.compile(optimizer=rmsprop,
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
 # Prepare callbacks
 filepath="results/weights/weights-{val_acc:.5f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
-lrate = LearningRateScheduler(step_decay)
+
+class LearningRateTracker(Callback):
+    def on_epoch_end(self, epoch, logs={}):
+        optimizer = self.model.optimizer
+        lr = K.eval(optimizer.lr * (1. / (1. + optimizer.decay * optimizer.iterations)))
+        print('\nLR: {:.6f}\n'.format(lr))
 
 # Training 
 
@@ -141,6 +144,6 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer,csv_logger,lrate], 
+              callbacks=[checkpointer,csv_logger,LearningRateTracker()], 
               validation_data=(X_test, y_test))
     model.reset_states()

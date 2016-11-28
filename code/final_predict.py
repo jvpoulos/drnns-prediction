@@ -12,7 +12,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback, EarlyStopping, ModelCheckpoint,LearningRateScheduler
+from keras.callbacks import Callback, EarlyStopping, ModelCheckpoint
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -36,12 +36,8 @@ output_dim = 1
 
 # Define cross-validated model parameters
 
-def step_decay(i): # learning rate schedule
-  initial_lrate = 0.01
-  drop = 0.5
-  epochs_drop = 10.0
-  lrate = initial_lrate * math.pow(drop, math.floor((1+(i+1))/epochs_drop))
-  return lrate
+learning_rate = 0.01
+decay = 1e-6
   
 batch_size = 14
 dropout = 0.50
@@ -116,7 +112,9 @@ model.load_weights(sys.argv[-1])
 
 # Configure learning process
 
-model.compile(optimizer='rmsprop',
+rmsprop = RMSprop(lr=learning_rate, decay=decay)
+
+model.compile(optimizer=rmsprop,
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
