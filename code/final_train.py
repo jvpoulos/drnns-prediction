@@ -1,6 +1,7 @@
 ## Trains best final model and saves weights at each epoch
 
 from __future__ import print_function
+import math
 import numpy as np
 from itertools import product
 import cPickle as pkl
@@ -9,7 +10,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,TensorBoard,CSVLogger
+from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger,LearningRateScheduler
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
@@ -31,7 +32,7 @@ y_train = y_train[1:y_train.shape[0]]
 
 # Define network structure
 
-epochs = 150
+epochs = 250
 nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
@@ -39,8 +40,15 @@ output_dim = 1
 
 # Define cross-validated model parameters
 
+def step_decay(i): # learning rate schedule
+  initial_lrate = 0.01
+  drop = 0.5
+  epochs_drop = 10.0
+  lrate = initial_lrate * math.pow(drop, math.floor((1+(i+1))/epochs_drop))
+  return lrate
+
 batch_size = 14
-dropout = 0.25
+dropout = 0.50
 activation = 'sigmoid'
 nb_hidden = 128
 initialization = 'glorot_normal'
@@ -118,14 +126,13 @@ model.compile(optimizer='rmsprop',
 # Prepare callbacks
 filepath="results/weights/weights-{val_acc:.4f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
-
-tensorboard = TensorBoard(log_dir='results/logs', histogram_freq=0, write_graph=True, write_images=True)
+lrate = LearningRateScheduler(step_decay)
 
 # Training 
 
 print('Training')
 for i in range(epochs):
-    csv_logger = CSVLogger('results/training-log.csv', separator=',', append=True)
+    csv_logger = CSVLogger('results/training_log.csv', separator=',', append=True)
     print('Epoch', i+1, '/', epochs)
     model.fit(X_train,
               y_train,
@@ -133,6 +140,6 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer,csv_logger,tensorboard], 
+              callbacks=[checkpointer,csv_logger,lrate], 
               validation_data=(X_test, y_test))
     model.reset_states()
