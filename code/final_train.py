@@ -33,7 +33,7 @@ y_train = y_train[1:y_train.shape[0]]
 
 # Define network structure
 
-epochs = sys.argv[-1]
+epochs = int(sys.argv[-1])
 nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
