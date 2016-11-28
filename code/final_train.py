@@ -9,6 +9,7 @@ import cPickle as pkl
 from scipy.sparse import csr_matrix
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 
+from keras import backend as K
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger
