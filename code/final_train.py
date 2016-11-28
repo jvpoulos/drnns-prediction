@@ -42,8 +42,8 @@ output_dim = 1
 # Define cross-validated model parameters
 
 def step_decay(i): # learning rate schedule
-  initial_lrate = 0.1
-  drop = 0.1
+  initial_lrate = 0.95
+  drop = 0.5
   epochs_drop = 5
   lrate = initial_lrate * math.pow(drop, math.floor((1+(i+1))/epochs_drop))
   return lrate
