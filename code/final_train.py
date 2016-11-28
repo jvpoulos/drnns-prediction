@@ -12,7 +12,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger
-from keras optimizers import RMSprop
+from keras.optimizers import RMSprop
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
