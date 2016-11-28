@@ -13,6 +13,7 @@ from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import Callback, EarlyStopping, ModelCheckpoint
+from keras optimizers import RMSprop
 
 import tensorflow as tf
 tf.python.control_flow_ops = tf
