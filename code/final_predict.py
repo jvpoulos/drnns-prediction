@@ -38,11 +38,8 @@ output_dim = 1
 
 # Define cross-validated model parameters
 
-learning_rate = 0.1
-decay_rate = 1e-2
-  
 batch_size = 14
-dropout = 0.35
+dropout = 0.5
 activation = 'sigmoid'
 nb_hidden = 128
 initialization = 'glorot_normal'
@@ -114,9 +111,7 @@ model.load_weights(sys.argv[-1])
 
 # Configure learning process
 
-rmsprop = RMSprop(lr=learning_rate, decay=decay_rate)
-
-model.compile(optimizer=rmsprop,
+model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
