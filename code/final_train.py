@@ -115,7 +115,7 @@ model.add(Dense(output_dim, activation=activation))
 
 # Configure learning process
 
-model.compile(optimizer='rmsprop',
+model.compile(optimizer=RMSprop(decay=1e-3),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 

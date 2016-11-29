@@ -111,7 +111,7 @@ model.load_weights(sys.argv[-1])
 
 # Configure learning process
 
-model.compile(optimizer='rmsprop',
+model.compile(optimizer=RMSprop(decay=1e-3),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
