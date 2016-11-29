@@ -31,7 +31,7 @@ y_train = y_train[1:y_train.shape[0]]
 # Define network structure
 
 epochs = 25 
-nb_timesteps = 14 
+nb_timesteps = 1 
 nb_classes = 2
 nb_features = X_train.shape[1]
 output_dim = 1
@@ -100,6 +100,7 @@ plot(model, to_file='results/baseline_model.png', # Plot graph of model
   show_shapes = True,
   show_layer_names = False)
 
+set_trace()
 # Training 
 
 early_stopping = EarlyStopping(monitor='loss', patience=1)
