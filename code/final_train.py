@@ -44,7 +44,7 @@ output_dim = 1
 # Define cross-validated model parameters
 
 batch_size = 14
-dropout = 0.5
+dropout = 0.35
 activation = 'sigmoid'
 nb_hidden = 128
 initialization = 'glorot_normal'
