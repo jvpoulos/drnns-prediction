@@ -1,4 +1,4 @@
-# DRNNs-prediction
+# drnns-prediction
 
 Implements deep RNNs using the [Keras](https://keras.io/) neural networks library on [Daily News for Stock Market Prediction](https://www.kaggle.com/aaron7sun/stocknews) dataset from [Kaggle](https://www.kaggle.com/).
 
