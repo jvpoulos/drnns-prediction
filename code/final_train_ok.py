@@ -25,7 +25,7 @@ print('Load saved data')
 X_train = pkl.load(open('data/X_train.np', 'rb'))
 X_test = pkl.load(open('data/X_test.np', 'rb'))
 
-# y_train = pkl.load(open('data/y_train.np', 'rb'))
+y_train = pkl.load(open('data/y_train.np', 'rb'))
 # y_test = pkl.load(open('data/y_test.np', 'rb'))
 
 # X_train = X_train[1:X_train.shape[0]] # drop first sample so batch size is divisible 
