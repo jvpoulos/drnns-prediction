@@ -65,9 +65,9 @@ print('X_test shape:', X_test.shape)
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
-# y_train = np.resize(y_train, (X_train.shape[0], output_dim))
+y_train = np.resize(y_train, (X_train.shape[0], output_dim))
 
-# print('y_train shape:', y_train.shape)
+print('y_train shape:', y_train.shape)
 
 # y_test = np.resize(y_test, (X_test.shape[0], output_dim))
 
