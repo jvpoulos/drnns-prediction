@@ -23,10 +23,10 @@ from utils import set_trace, plot_ROC
 print('Load saved data')
 
 X_train = pkl.load(open('data/X_train.np', 'rb'))
-X_test = pkl.load(open('data/X_test.np', 'rb'))
+X_val = pkl.load(open('data/X_val.np', 'rb'))
 
 y_train = pkl.load(open('data/y_train.np', 'rb'))
-# y_test = pkl.load(open('data/y_test.np', 'rb'))
+y_val = pkl.load(open('data/y_val.np', 'rb'))
 
 # X_train = X_train[1:X_train.shape[0]] # drop first sample so batch size is divisible 
 # y_train = y_train[1:y_train.shape[0]]
@@ -34,7 +34,7 @@ y_train = pkl.load(open('data/y_train.np', 'rb'))
 # Define network structure
 
 epochs = int(sys.argv[-1])
-nb_timesteps = 2480 # no. obs per year 
+nb_timesteps = 1
 nb_classes = 2
 nb_features = X_train.shape[1]
 output_dim = 1
@@ -56,11 +56,11 @@ X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
 
 print('X_train shape:', X_train.shape)
 
-#X_test = csr_matrix.toarray(X_test) # convert from sparse matrix to N dimensional array
+#X_val = csr_matrix.toarray(X_val) # convert from sparse matrix to N dimensional array
 
-X_test = np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
+X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 
-print('X_test shape:', X_test.shape)
+print('X_val shape:', X_val.shape)
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
@@ -69,9 +69,9 @@ y_train = np.resize(y_train, (X_train.shape[0], output_dim))
 
 print('y_train shape:', y_train.shape)
 
-# y_test = np.resize(y_test, (X_test.shape[0], output_dim))
+y_val = np.resize(y_val, (X_val.shape[0], output_dim))
 
-# print('y_test shape:', y_test.shape)
+print('y_val shape:', y_val.shape)
 
 # Initiate sequential model
 
@@ -140,5 +140,6 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer,csv_logger,LearningRateTracker()])
+              callbacks=[checkpointer,csv_logger,LearningRateTracker()], 
+              validation_data=(X_val, y_val))
     model.reset_states()
