@@ -6,8 +6,6 @@ import math
 import numpy as np
 from itertools import product
 import cPickle as pkl
-from scipy.sparse import csr_matrix
-from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 from keras import backend as K
 from keras.models import Sequential
