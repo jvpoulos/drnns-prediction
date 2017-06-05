@@ -13,8 +13,8 @@ from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger
 from keras.optimizers import RMSprop
 
-import tensorflow as tf
-tf.python.control_flow_ops = tf
+# import tensorflow as tf
+# tf.python.control_flow_ops = tf
 
 from utils import set_trace, plot_ROC
 
