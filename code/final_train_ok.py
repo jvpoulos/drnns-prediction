@@ -114,6 +114,7 @@ model.compile(optimizer='rmsprop',
 
 filepath="results/weights/weights-{val_mean_absolute_error:.5f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=True)
+earlystop = EarlyStopping(monitor='val_mean_absolute_error', patience=5) # stop if val error doesn't improve after 5 epochs
 
 class LearningRateTracker(Callback):
     def on_epoch_end(self, epoch, logs={}):
@@ -133,6 +134,6 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer,csv_logger,LearningRateTracker()], 
+              callbacks=[checkpointer,earlystop,csv_logger,LearningRateTracker()], 
               validation_data=(X_val, y_val))
     model.reset_states()
