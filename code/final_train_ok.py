@@ -119,7 +119,7 @@ model.compile(optimizer='rmsprop',
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/weights/weights-{val_acc:.5f}.hdf5"
+filepath="results/weights/weights-{val_mae:.5f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 class LearningRateTracker(Callback):
