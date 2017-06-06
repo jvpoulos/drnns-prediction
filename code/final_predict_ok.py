@@ -120,4 +120,4 @@ print('Generate predictions on test data')
 
 y_pred = model.predict(X_test, batch_size=batch_size, verbose=1) # generate output predictions for test samples, batch-by-batch
 
-np.savetxt("gini-test-pred.csv", y_pred, delimiter=",")
+np.savetxt("results/ok-pred/gini-test-pred.csv", y_pred, delimiter=",")
