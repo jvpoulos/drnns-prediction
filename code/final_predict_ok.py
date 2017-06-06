@@ -44,12 +44,16 @@ initialization = 'glorot_normal'
 
 X_test = np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
 
+X_test = X_test[7:X_test.shape[0]] # drop first 7 samples so batch size is divisible 
+
 print('X_test shape:', X_test.shape)
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_test = np.resize(y_test, (X_test.shape[0], output_dim))
+
+y_test = y_test[7:y_test.shape[0]]
 
 print('y_test shape:', y_test.shape)
 
