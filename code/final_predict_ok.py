@@ -8,7 +8,7 @@ from itertools import product
 import cPickle as pkl
 
 from keras import backend as K
-from keras.utils.visualize_util import plot, model_to_dot
+from keras.utils.vis_utils import plot_model, model_to_dot
 from keras.models import Sequential
 from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import Callback, EarlyStopping, ModelCheckpoint
@@ -93,7 +93,7 @@ model.add(Dense(output_dim, activation=activation))
 
 # Visualize model
 
-plot(model, to_file='results/final_model.png', # Plot graph of model
+plot_model(model, to_file='results/final_model.png', # Plot graph of model
   show_shapes = True,
   show_layer_names = False)
 
