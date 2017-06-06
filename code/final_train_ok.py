@@ -13,9 +13,6 @@ from keras.layers import GRU, Dense, Masking, Dropout, Activation
 from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger
 from keras.optimizers import RMSprop
 
-# import tensorflow as tf
-# tf.python.control_flow_ops = tf
-
 from utils import set_trace, plot_ROC
 
 # Load saved data
@@ -50,13 +47,9 @@ initialization = 'glorot_normal'
 # # Reshape X to three dimensions
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
-#X_train = csr_matrix.toarray(X_train) # convert from sparse matrix to N dimensional array
-
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
 
 print('X_train shape:', X_train.shape)
-
-#X_val = csr_matrix.toarray(X_val) # convert from sparse matrix to N dimensional array
 
 X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 
@@ -120,7 +113,7 @@ model.compile(optimizer='rmsprop',
 # Prepare model checkpoints and callbacks
 
 filepath="results/weights/weights-{val_mean_absolute_error:.5f}.hdf5"
-checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
+checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=True)
 
 class LearningRateTracker(Callback):
     def on_epoch_end(self, epoch, logs={}):
