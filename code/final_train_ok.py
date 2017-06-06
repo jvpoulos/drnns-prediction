@@ -41,7 +41,7 @@ output_dim = 1
 
 # Define model parameters
 
-batch_size = 15
+batch_size = 13
 dropout = 0.5
 activation = 'sigmoid'
 nb_hidden = 128
