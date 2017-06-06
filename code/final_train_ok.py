@@ -114,7 +114,7 @@ model.add(Dense(output_dim, activation=activation))
 # Configure learning process
 
 model.compile(optimizer='rmsprop',
-              loss='binary_crossentropy',
+              loss='mean_squared_error',
               metrics=['accuracy'])
 
 # Prepare model checkpoints and callbacks
