@@ -22,7 +22,7 @@ print('Load saved test data')
 
 X_test = pkl.load(open('data/X_test.np', 'rb'))
 
-y_test = pkl.load(open('data/y_test.np', 'rb'))
+y_test = pkl.load(open('data/y_test_gini.np', 'rb'))
 
 # Define network structure
 
