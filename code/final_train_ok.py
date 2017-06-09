@@ -20,13 +20,8 @@ from utils import set_trace, plot_ROC
 print('Load saved data')
 
 X_train = pkl.load(open('data/X_train.np', 'rb'))
-X_val = pkl.load(open('data/X_val.np', 'rb'))
 
 y_train = pkl.load(open('data/y_train_gini.np', 'rb'))
-y_val = pkl.load(open('data/y_val_gini.np', 'rb'))
-
-X_val = X_val[1:X_val.shape[0]] # drop first sample so batch size is divisible 
-y_val = y_val[1:y_val.shape[0]]
 
 # Define network structure
 
@@ -51,20 +46,12 @@ X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
 
 print('X_train shape:', X_train.shape)
 
-X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
-
-print('X_val shape:', X_val.shape)
-
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (X_train.shape[0], output_dim))
 
 print('y_train shape:', y_train.shape)
-
-y_val = np.resize(y_val, (X_val.shape[0], output_dim))
-
-print('y_val shape:', y_val.shape)
 
 # Initiate sequential model
 
@@ -112,7 +99,7 @@ model.compile(optimizer='rmsprop',
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/weights/weights-{val_mean_absolute_error:.5f}.hdf5"
+filepath="results/weights/weights-{mean_absolute_error:.5f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=True)
 
 class LearningRateTracker(Callback):
@@ -133,6 +120,5 @@ for i in range(epochs):
               verbose=1,
               nb_epoch=1,
               shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer,csv_logger,LearningRateTracker()], 
-              validation_data=(X_val, y_val))
+              callbacks=[checkpointer,csv_logger,LearningRateTracker()])
     model.reset_states()

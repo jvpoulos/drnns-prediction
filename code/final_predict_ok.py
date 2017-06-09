@@ -21,15 +21,10 @@ from utils import set_trace, plot_ROC
 print('Load saved test data')
 
 X_train = pkl.load(open('data/X_train.np', 'rb'))
-X_val = pkl.load(open('data/X_val.np', 'rb'))
 X_test = pkl.load(open('data/X_test.np', 'rb'))
 
 y_train = pkl.load(open('data/y_train_gini.np', 'rb'))
-y_val = pkl.load(open('data/y_val_gini.np', 'rb'))
 y_test = pkl.load(open('data/y_test_gini.np', 'rb'))
-
-X_val = X_val[1:X_val.shape[0]] # drop first sample so batch size is divisible 
-y_val = y_val[1:y_val.shape[0]]
 
 # Define network structure
 
@@ -51,8 +46,6 @@ initialization = 'glorot_normal'
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
 
-X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
-
 X_test = np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
 X_test = X_test[7:X_test.shape[0]] # drop first 7 samples so batch size is divisible 
 
@@ -61,8 +54,6 @@ X_test = X_test[7:X_test.shape[0]] # drop first 7 samples so batch size is divis
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (X_train.shape[0], output_dim))
-
-y_val = np.resize(y_val, (X_val.shape[0], output_dim))
 
 y_test = np.resize(y_test, (X_test.shape[0], output_dim))
 y_test = y_test[7:y_test.shape[0]]
@@ -132,13 +123,7 @@ y_pred_test = model.predict(X_test, batch_size=batch_size, verbose=1) # generate
 
 np.savetxt("results/ok-pred/gini-test-pred.csv", y_pred_test, delimiter=",")
 
-print('Generate predictions on training set')
-
-# Get fits on training and validation set for plots
-
-y_pred_val = model.predict(X_val, batch_size=batch_size, verbose=1) 
-
-np.savetxt("results/ok-pred/gini-val-pred.csv", y_pred_val, delimiter=",")
+# Get fits on training set for plots
 
 print('Generate predictions on training set')
 
