@@ -4,16 +4,13 @@ from __future__ import print_function
 import sys
 import math
 import numpy as np
-from itertools import product
 import cPickle as pkl
 
-from keras import backend as K
 from keras.models import Sequential
-from keras.layers import GRU, Dense, Masking, Dropout, Activation
-from keras.callbacks import Callback,EarlyStopping, ModelCheckpoint,CSVLogger
-from keras.optimizers import RMSprop
-
-from utils import set_trace, plot_ROC
+from keras.layers import LSTM, Dense, Masking, Dropout, Activation
+from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger, TensorBoard
+from keras.optimizers import SGD
+from keras import regularizers
 
 # Load saved data
 
@@ -30,26 +27,23 @@ y_val = pkl.load(open('data/y_val_sales.np', 'rb')) # sales
 
 epochs = int(sys.argv[-1])
 nb_timesteps = 1
-nb_classes = 2
 nb_features = X_train.shape[1]
 output_dim = 1
 
 # Define model parameters
 
-batch_size = 8
 dropout = 0.5
-activation = 'sigmoid'
+batch_size = 64
 nb_hidden = 128
+activation = 'linear'
 initialization = 'glorot_normal'
 
 # # Reshape X to three dimensions
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
-X_train = X_train[2:X_train.shape[0]] # drop first 2 samples so batch size is divisible 
 
 X_val= np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
-X_val = X_val[1:X_val.shape[0]] # drop first sample so batch size is divisible 
 
 print('X_train shape:', X_train.shape)
 print('X_val shape:', X_val.shape)
@@ -58,10 +52,8 @@ print('X_val shape:', X_val.shape)
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (y_train.shape[0], output_dim))
-y_train = y_train[2:y_train.shape[0]] # drop first 2 samples so batch size is divisible 
 
 y_val = np.resize(y_val, (y_val.shape[0], output_dim))
-y_val = y_val[1:y_val.shape[0]] # drop first sample so batch size is divisible 
 
 print('y_train shape:', y_train.shape)
 print('y_val shape:', y_train.shape)
@@ -71,38 +63,15 @@ print('y_val shape:', y_train.shape)
 print('Initializing model')
 
 model = Sequential()
-
-# Stack layers
-# expected input batch shape: (batch_size, nb_timesteps, nb_features)
-# note that we have to provide the full batch_input_shape since the network is stateful.
-# the sample of index i in batch k is the follow-up for the sample i in batch k-1.
-model.add(Masking(mask_value=0., batch_input_shape=(batch_size, nb_timesteps, nb_features))) # embedding for variable input lengths
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization,
-               batch_input_shape=(batch_size, nb_timesteps, nb_features)))
-model.add(Dropout(dropout))  
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout)) 
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout)) 
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout)) 
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, return_sequences=True, stateful=True, init=initialization))  
-model.add(Dropout(dropout))
-model.add(GRU(nb_hidden, stateful=True, init=initialization))  
-model.add(Dropout(dropout)) 
-model.add(Dense(output_dim, activation=activation))
+model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
+#model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization))
+#model.add(Dropout(dropout)) 
+model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+#model.add(Dropout(dropout)) 
+model.add(Dense(output_dim, 
+  activation=activation,
+  kernel_regularizer=regularizers.l2(0.01),
+  activity_regularizer=regularizers.l1(0.01)))
 
 # Configure learning process
 
@@ -112,27 +81,22 @@ model.compile(optimizer='rmsprop',
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/weights/weights-{val_mean_absolute_error:.5f}.hdf5"
+filepath="results/ok-weights/sales/weights-{val_mean_absolute_error:.3f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=True)
 
-class LearningRateTracker(Callback):
-    def on_epoch_end(self, epoch, logs={}):
-        optimizer = self.model.optimizer
-        lr = K.eval(optimizer.lr * (1. / (1. + optimizer.decay * optimizer.iterations)))
-        print('\nLR: {:.6f}\n'.format(lr))
+earlystop = EarlyStopping(monitor='val_mean_absolute_error', patience=20) # stops if val train error does not improve
 
-# Training 
+TB = TensorBoard(log_dir='results/logs/patents', histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
+# Train model
 print('Training')
-for i in range(epochs):
-    csv_logger = CSVLogger('results/training_log.csv', separator=',', append=True)
-    print('Epoch', i+1, '/', epochs)
-    model.fit(X_train,
-              y_train,
-              batch_size=batch_size,
-              verbose=1,
-              nb_epoch=1,
-              shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
-              callbacks=[checkpointer,csv_logger,LearningRateTracker()],
-              validation_data=(X_val, y_val))
-    model.reset_states()
+csv_logger = CSVLogger('results/training_log_sales.csv', separator=',', append=True)
+
+model.fit(X_train,
+  y_train,
+  batch_size=batch_size,
+  verbose=1,
+  epochs=epochs,
+  shuffle=True,
+  callbacks=[checkpointer,csv_logger,earlystop,TB],
+  validation_data=(X_val, y_val))
