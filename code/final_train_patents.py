@@ -31,7 +31,8 @@ output_dim = 1
 
 # Define model parameters
 
-dropout = 0.5
+dropout = 0
+penalty = 0 
 batch_size = 64
 nb_hidden = 256
 activation = 'linear'
@@ -68,8 +69,8 @@ model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initializati
 model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
 model.add(Dense(output_dim, 
   activation=activation,
-  kernel_regularizer=regularizers.l2(0.01),
-  activity_regularizer=regularizers.l1(0.01)))
+  kernel_regularizer=regularizers.l2(penalty),
+  activity_regularizer=regularizers.l1(penalty)))
 
 # Configure learning process
 
