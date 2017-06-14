@@ -8,7 +8,7 @@ import cPickle as pkl
 
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation
-from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger, TensorBoard
+from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adadelta
 
@@ -31,7 +31,7 @@ output_dim = 1
 
 # Define model parameters
 
-dropout = 0.7
+dropout = 0.5
 batch_size = 64
 nb_hidden = 128
 activation = 'linear'
@@ -83,7 +83,7 @@ model.compile(optimizer=Adadelta,
 filepath="results/ok-weights/sales/weights-{val_mean_absolute_error:.3f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
-earlystop = EarlyStopping(monitor='val_mean_absolute_error', patience=5) # stops if val train error does not improve
+#earlystop = EarlyStopping(monitor='val_mean_absolute_error', patience=5) # stops if val train error does not improve
 
 TB = TensorBoard(log_dir='results/logs/patents', histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
@@ -97,5 +97,5 @@ model.fit(X_train,
   verbose=1,
   epochs=epochs,
   shuffle=True,
-  callbacks=[checkpointer,csv_logger,earlystop,TB],
+  callbacks=[checkpointer,csv_logger,TB],
   validation_data=(X_val, y_val))
