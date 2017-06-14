@@ -32,7 +32,7 @@ output_dim = 1
 # Define model parameters
 
 dropout = 0.5
-penalty = 0 
+penalty = 0.001 
 batch_size = 64
 nb_hidden = 256
 activation = 'linear'
@@ -82,7 +82,7 @@ model.compile(optimizer=Adadelta,
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/ok-weights/sales/weights-{val_mean_absolute_error:.3f}.hdf5"
+filepath="results/ok-weights/sales/weights-{val_mean_absolute_error:.2f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 #earlystop = EarlyStopping(monitor='val_mean_absolute_error', patience=5) # stops if val train error does not improve
