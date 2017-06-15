@@ -38,7 +38,7 @@ output_dim = 1
 # Define model parameters
 
 #dropout = 0.5
-dropout = 0.25
+dropout = 0
 #penalty = 0.001 
 penalty = 0
 batch_size = 64
