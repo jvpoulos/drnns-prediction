@@ -1,5 +1,9 @@
 ## Loads best checkpointed model and makes prediciton on test set
 
+import theano
+theano.config.device = '0'
+theano.config.floatX = 'float32'
+
 from __future__ import print_function
 import sys
 import math
@@ -11,10 +15,6 @@ from keras.layers import LSTM, Dense, Masking, Dropout, Activation
 from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adadelta
-
-import theano
-theano.config.device = '0'
-theano.config.floatX = 'float32'
 
 # Load saved data
 
