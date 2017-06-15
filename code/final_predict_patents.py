@@ -1,10 +1,11 @@
 ## Loads best checkpointed model and makes prediciton on test set
 
+from __future__ import print_function
+
 import theano
 theano.config.device = '0'
 theano.config.floatX = 'float32'
 
-from __future__ import print_function
 import sys
 import math
 import numpy as np
