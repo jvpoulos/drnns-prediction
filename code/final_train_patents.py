@@ -12,6 +12,10 @@ from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adadelta
 
+import theano
+theano.config.device = '0'
+theano.config.floatX = 'float32'
+
 # Load saved data
 
 print('Load saved data')
@@ -34,8 +38,10 @@ output_dim = 1
 
 # Define model parameters
 
-dropout = 0.5
-penalty = 0.001 
+#dropout = 0.5
+dropout = 0.25
+#penalty = 0.001 
+penalty = 0
 batch_size = 64
 nb_hidden = 256
 activation = 'linear'

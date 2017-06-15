@@ -12,6 +12,10 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger, TensorBoa
 from keras import regularizers
 from keras.optimizers import Adadelta
 
+import theano
+theano.config.device = '0'
+theano.config.floatX = 'float32'
+
 # Load saved data
 
 print('Load saved test data')
