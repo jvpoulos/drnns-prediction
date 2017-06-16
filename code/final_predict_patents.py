@@ -21,13 +21,13 @@ X_train = pkl.load(open('data/X_train_patents.np', 'rb'))
 X_val = pkl.load(open('data/X_val_patents.np', 'rb'))
 X_test = pkl.load(open('data/X_test_patents.np', 'rb'))
 
-# y_train = pkl.load(open('data/y_train_sales.np', 'rb')) # sales
-# y_val = pkl.load(open('data/y_val_sales.np', 'rb')) 
-# y_test = pkl.load(open('data/y_test_sales.np', 'rb')) 
+y_train = pkl.load(open('data/y_train_sales.np', 'rb')) # sales
+y_val = pkl.load(open('data/y_val_sales.np', 'rb')) 
+y_test = pkl.load(open('data/y_test_sales.np', 'rb')) 
 
-y_train = pkl.load(open('data/y_train_homesteads.np', 'rb')) # homesteads
-y_val = pkl.load(open('data/y_val_homesteads.np', 'rb')) 
-y_test = pkl.load(open('data/y_test_homesteads.np', 'rb')) 
+# y_train = pkl.load(open('data/y_train_homesteads.np', 'rb')) # homesteads
+# y_val = pkl.load(open('data/y_val_homesteads.np', 'rb')) 
+# y_test = pkl.load(open('data/y_test_homesteads.np', 'rb')) 
 
 # Define network structure
 
@@ -37,10 +37,10 @@ output_dim = 1
 
 # Define model parameters
 
-#dropout = 0.5
-dropout = 0
-#penalty = 0.001 
-penalty = 0
+dropout = 0.7 # sales
+#dropout = 0 # homesteads
+penalty = 0.001 # sales
+#penalty = 0 # homesteads
 batch_size = 64
 nb_hidden = 256
 activation = 'linear'
@@ -93,7 +93,7 @@ print('Generate predictions on test data')
 
 y_pred_test = model.predict(X_test, batch_size=batch_size, verbose=1) # generate output predictions for test samples, batch-by-batch
 
-np.savetxt("results/ok-pred/homesteads-test-pred.csv", y_pred_test, delimiter=",")
+np.savetxt("results/ok-pred/sales-test-pred.csv", y_pred_test, delimiter=",")
 
 # Get fits on training and validation set for plots
 
@@ -101,10 +101,10 @@ print('Generate predictions on training set')
 
 y_pred_train = model.predict(X_train, batch_size=batch_size, verbose=1) 
 
-np.savetxt("results/ok-pred/homesteads-train-pred.csv", y_pred_train, delimiter=",")
+np.savetxt("results/ok-pred/sales-train-pred.csv", y_pred_train, delimiter=",")
 
 print('Generate predictions on validation set')
 
 y_pred_val = model.predict(X_val, batch_size=batch_size, verbose=1) 
 
-np.savetxt("results/ok-pred/homesteads-val-pred.csv", y_pred_val, delimiter=",")
+np.savetxt("results/ok-pred/sales-val-pred.csv", y_pred_val, delimiter=",")

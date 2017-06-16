@@ -20,11 +20,11 @@ print('Load saved data')
 X_train = pkl.load(open('data/X_train_patents.np', 'rb'))
 X_val = pkl.load(open('data/X_val_patents.np', 'rb'))
 
-# y_train = pkl.load(open('data/y_train_sales.np', 'rb')) # sales
-# y_val = pkl.load(open('data/y_val_sales.np', 'rb')) # sales
+y_train = pkl.load(open('data/y_train_sales.np', 'rb')) # sales
+y_val = pkl.load(open('data/y_val_sales.np', 'rb')) # sales
 
-y_train = pkl.load(open('data/y_train_homesteads.np', 'rb')) # homesteads
-y_val = pkl.load(open('data/y_val_homesteads.np', 'rb')) # homesteads
+#y_train = pkl.load(open('data/y_train_homesteads.np', 'rb')) # homesteads
+#y_val = pkl.load(open('data/y_val_homesteads.np', 'rb')) # homesteads
 
 # Define network structure
 
@@ -35,10 +35,10 @@ output_dim = 1
 
 # Define model parameters
 
-#dropout = 0.5
-dropout = 0
-#penalty = 0.001 
-penalty = 0
+dropout = 0.7 # sales
+#dropout = 0 # homesteads
+penalty = 0.001 # sales
+#penalty = 0 # homesteads
 batch_size = 64
 nb_hidden = 256
 activation = 'linear'
@@ -88,7 +88,7 @@ model.compile(optimizer=Adadelta,
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/ok-weights/homesteads/weights-{val_mean_absolute_error:.2f}.hdf5"
+filepath="results/ok-weights/sales/weights-{val_mean_absolute_error:.2f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 #earlystop = EarlyStopping(monitor='val_mean_absolute_error', patience=5) # stops if val train error does not improve
@@ -97,7 +97,7 @@ TB = TensorBoard(log_dir='results/logs/patents', histogram_freq=0, batch_size=ba
 
 # Train model
 print('Training')
-csv_logger = CSVLogger('results/training_log_homesteads.csv', separator=',', append=True)
+csv_logger = CSVLogger('results/training_log_sales.csv', separator=',', append=True)
 
 model.fit(X_train,
   y_train,
