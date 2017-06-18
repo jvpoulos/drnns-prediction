@@ -15,24 +15,25 @@ from keras.optimizers import Adadelta
 
 # Load saved data
 
-print('Load saved data')
+dataname = sys.argv[-1]
+print('Load saved {} data'.format(dataname))
 
-X_train = pkl.load(open('data/homesteads_x_train.np', 'rb')) # homesteads
+X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) # homesteads
 
-y_train = pkl.load(open('data/homesteads_y_train.np', 'rb')) 
+y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
 
 # Define network structure
 
-epochs = int(sys.argv[-1])
+epochs = int(sys.argv[-2])
 nb_timesteps = 1
 nb_features = X_train.shape[1]
 output_dim = 1
 
 # Define model parameters
 
-dropout = 0.5
+dropout = 0
 penalty = 0 
-batch_size = 8
+batch_size = X_train.shape[0] # use entire
 nb_hidden = 256
 activation = 'linear'
 initialization = 'glorot_normal'
@@ -75,14 +76,14 @@ model.compile(optimizer=Adadelta,
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/ok-weights/homesteads/weights-{mean_absolute_error:.2f}.hdf5"
+filepath="results/ok-weights/{}/weights-{mean_absolute_error:.2f}.hdf5".format(dataname)
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 TB = TensorBoard(log_dir='results/logs', histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
 # Train model
 print('Training')
-csv_logger = CSVLogger('results/training_log_homesteads.csv', separator=',', append=True)
+csv_logger = CSVLogger('results/training_log_{}.csv'.format(dataname), separator=',', append=True)
 
 model.fit(X_train,
   y_train,

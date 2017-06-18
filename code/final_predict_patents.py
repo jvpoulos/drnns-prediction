@@ -15,19 +15,14 @@ from keras.optimizers import Adadelta
 
 # Load saved data
 
-print('Load saved test data')
+dataname = sys.argv[-1]
+print('Load saved {} test data'.format(dataname))
 
-X_train = pkl.load(open('data/X_train_patents.np', 'rb'))
-X_val = pkl.load(open('data/X_val_patents.np', 'rb'))
-X_test = pkl.load(open('data/X_test_patents.np', 'rb'))
+X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) 
+X_test = pkl.load(open('data/{}_x_test.np'.format(dataname), 'rb')) 
 
-y_train = pkl.load(open('data/y_train_sales.np', 'rb')) # sales
-y_val = pkl.load(open('data/y_val_sales.np', 'rb')) 
-y_test = pkl.load(open('data/y_test_sales.np', 'rb')) 
-
-# y_train = pkl.load(open('data/y_train_homesteads.np', 'rb')) # homesteads
-# y_val = pkl.load(open('data/y_val_homesteads.np', 'rb')) 
-# y_test = pkl.load(open('data/y_test_homesteads.np', 'rb')) 
+y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
+y_test = pkl.load(open('data/{}_y_test.np'.format(dataname), 'rb')) 
 
 # Define network structure
 
@@ -37,11 +32,9 @@ output_dim = 1
 
 # Define model parameters
 
-dropout = 0.7 # sales
-#dropout = 0 # homesteads
-penalty = 0.001 # sales
-#penalty = 0 # homesteads
-batch_size = 64
+dropout = 0
+penalty = 0 
+batch_size = X_train.shape[0] # use entire
 nb_hidden = 256
 activation = 'linear'
 initialization = 'glorot_normal'
@@ -50,14 +43,12 @@ initialization = 'glorot_normal'
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
-X_val= np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 X_test= np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (y_train.shape[0], output_dim))
-y_val = np.resize(y_val, (y_val.shape[0], output_dim))
 y_test = np.resize(y_test, (y_test.shape[0], output_dim))
 
 # Initiate sequential model
@@ -75,7 +66,8 @@ model.add(Dense(output_dim,
   activity_regularizer=regularizers.l1(penalty)))
 
 # Load weights
-model.load_weights(sys.argv[-1])
+filename = sys.argv[-2]
+model.load_weights(filename)
 
 # Configure learning process
 
@@ -93,18 +85,12 @@ print('Generate predictions on test data')
 
 y_pred_test = model.predict(X_test, batch_size=batch_size, verbose=1) # generate output predictions for test samples, batch-by-batch
 
-np.savetxt("results/ok-pred/sales-test-pred.csv", y_pred_test, delimiter=",")
+np.savetxt("results/ok-pred/{}-test-{}.csv".format(dataname,filename), y_pred_test, delimiter=",")
 
-# Get fits on training and validation set for plots
+# Get fits on training set for plots
 
 print('Generate predictions on training set')
 
 y_pred_train = model.predict(X_train, batch_size=batch_size, verbose=1) 
 
-np.savetxt("results/ok-pred/sales-train-pred.csv", y_pred_train, delimiter=",")
-
-print('Generate predictions on validation set')
-
-y_pred_val = model.predict(X_val, batch_size=batch_size, verbose=1) 
-
-np.savetxt("results/ok-pred/sales-val-pred.csv", y_pred_val, delimiter=",")
+np.savetxt("results/ok-pred/{}-train-{}.csv".format(dataname,filename), y_pred_train, delimiter=",")
