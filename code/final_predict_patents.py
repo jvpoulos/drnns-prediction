@@ -85,7 +85,7 @@ print('Generate predictions on test data')
 
 y_pred_test = model.predict(X_test, batch_size=batch_size, verbose=1) # generate output predictions for test samples, batch-by-batch
 
-np.savetxt("results/ok-pred/{}-test-{}.csv".format(dataname,filename), y_pred_test, delimiter=",")
+np.savetxt("{}-{}-test.csv".format(filename,dataname), y_pred_test, delimiter=",")
 
 # Get fits on training set for plots
 
@@ -93,4 +93,4 @@ print('Generate predictions on training set')
 
 y_pred_train = model.predict(X_train, batch_size=batch_size, verbose=1) 
 
-np.savetxt("results/ok-pred/{}-train-{}.csv".format(dataname,filename), y_pred_train, delimiter=",")
+np.savetxt("{}-{}-train.csv".format(filename,dataname), y_pred_train, delimiter=",")
