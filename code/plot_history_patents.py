@@ -9,7 +9,7 @@ history = np.genfromtxt(sys.argv[-1], names=True, delimiter=",")
 # Summarize history for MAE
 plt.plot(history['mean_absolute_error'])
 plt.plot(history['val_mean_absolute_error'])
-plt.title('Homesteads')
+plt.title('Sales')
 plt.ylabel('Mean absolute error')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Validation'], loc='upper left')
