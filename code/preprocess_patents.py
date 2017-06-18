@@ -5,17 +5,17 @@ import cPickle as pkl
 # Read data
 print('Reading data')
 
-homesteads_x_train = pd.read_csv("data/patents/homesteads_x_train.csv") 
-homesteads_x_test = pd.read_csv("data/patents/homesteads_x_test.csv") 
+homesteads_x_train = pd.read_csv("data/patents/homesteads-x-train.csv") 
+homesteads_x_test = pd.read_csv("data/patents/homesteads-x-test.csv") 
 
-homesteads_y_train = pd.read_csv("data/patents/homesteads_y_train.csv") 
-homesteads_y_test = pd.read_csv("data/patents/homesteads_y_test.csv") 
+homesteads_y_train = pd.read_csv("data/patents/homesteads-y-train.csv") 
+homesteads_y_test = pd.read_csv("data/patents/homesteads-y-test.csv") 
 
-sales_x_train = pd.read_csv("data/patents/sales_x_train.csv") 
-sales_x_test = pd.read_csv("data/patents/sales_x_test.csv") 
+sales_x_train = pd.read_csv("data/patents/sales-x-train.csv") 
+sales_x_test = pd.read_csv("data/patents/sales-x-test.csv") 
 
-sales_y_train = pd.read_csv("data/patents/sales_y_train.csv") 
-sales_y_test = pd.read_csv("data/patents/sales_y_test.csv") 
+sales_y_train = pd.read_csv("data/patents/sales-y-train.csv") 
+sales_y_test = pd.read_csv("data/patents/sales-y-test.csv") 
 
 
 # Save train and test sets to disk
