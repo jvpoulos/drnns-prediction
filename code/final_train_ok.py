@@ -13,6 +13,12 @@ from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adadelta
 
+import tensorflow as tf
+
+# Select gpu
+
+gpu = '/gpu:{}'.format(sys.argv[-3])
+
 # Load saved data
 
 dataname = sys.argv[-1]
@@ -56,15 +62,16 @@ print('y_train shape:', y_train.shape)
 
 print('Initializing model')
 
-model = Sequential()
-model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
-model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-model.add(Dense(output_dim, 
-  activation=activation,
-  kernel_regularizer=regularizers.l2(penalty),
-  activity_regularizer=regularizers.l1(penalty)))
+with tf.device(gpu):
+  model = Sequential()
+  model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
+  model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+  model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+  model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+  model.add(Dense(output_dim, 
+    activation=activation,
+    kernel_regularizer=regularizers.l2(penalty),
+    activity_regularizer=regularizers.l1(penalty)))
 
 # Configure learning process
 
