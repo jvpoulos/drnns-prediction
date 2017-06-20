@@ -13,11 +13,14 @@ from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adadelta
 
-import tensorflow as tf
-
 # Select gpu
+import os
+gpu = sys.argv[-3]
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
-gpu = '/gpu:{}'.format(sys.argv[-3])
+from tensorflow.python.client import device_lib
+print device_lib.list_local_devices()
 
 # Load saved data
 
@@ -62,16 +65,15 @@ print('y_train shape:', y_train.shape)
 
 print('Initializing model')
 
-with tf.device(gpu):
-  model = Sequential()
-  model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
-  model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-  model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-  model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-  model.add(Dense(output_dim, 
-    activation=activation,
-    kernel_regularizer=regularizers.l2(penalty),
-    activity_regularizer=regularizers.l1(penalty)))
+model = Sequential()
+model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
+model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+model.add(Dense(output_dim, 
+  activation=activation,
+  kernel_regularizer=regularizers.l2(penalty),
+  activity_regularizer=regularizers.l1(penalty)))
 
 # Configure learning process
 
