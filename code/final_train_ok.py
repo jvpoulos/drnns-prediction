@@ -27,9 +27,9 @@ print(device_lib.list_local_devices())
 dataname = sys.argv[-1]
 print('Load saved {} data'.format(dataname))
 
-X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) 
+X_train = pkl.load(open('data/{}_x_train_placebo.np'.format(dataname), 'rb')) 
 
-y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
+y_train = pkl.load(open('data/{}_y_train_placebo.np'.format(dataname), 'rb')) 
 
 # Define network structure
 
