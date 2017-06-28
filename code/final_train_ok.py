@@ -40,7 +40,7 @@ output_dim = 1
 
 # Define model parameters
 
-dropout = 0
+dropout = 0.5
 penalty = 0 
 batch_size = 12
 nb_hidden = 256
