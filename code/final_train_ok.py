@@ -34,10 +34,6 @@ X_train = pkl.load(open('data/{}_x_train_placebo.np'.format(dataname), 'rb'))
 
 y_train = pkl.load(open('data/{}_y_train_placebo.np'.format(dataname), 'rb')) 
 
-X_val = pkl.load(open('data/{}_x_val_placebo.np'.format(dataname), 'rb')) 
-
-y_val = pkl.load(open('data/{}_y_val_placebo.np'.format(dataname), 'rb')) 
-
 # Define network structure
 
 epochs = int(sys.argv[-2])
@@ -58,19 +54,15 @@ initialization = 'glorot_normal'
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
-X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 
 print('X_train shape:', X_train.shape)
-print('X_val shape:', X_val.shape)
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (y_train.shape[0], output_dim))
-y_val = np.resize(y_val, (y_val.shape[0], output_dim))
 
 print('y_train shape:', y_train.shape)
-print('y_val shape:', y_val.shape)
 
 # Initiate sequential model
 
@@ -96,7 +88,7 @@ model.compile(optimizer=Adadelta,
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/ok-weights/weights-{val_mean_absolute_error:.2f}.hdf5"
+filepath="results/ok-weights/weights-{mean_absolute_error:.2f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 TB = TensorBoard(log_dir='results/logs', histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
@@ -111,5 +103,4 @@ model.fit(X_train,
   verbose=1,
   epochs=epochs,
   shuffle=True,
-  callbacks=[checkpointer,csv_logger,TB],
-  validation_data=(X_val, y_val))
+  callbacks=[checkpointer,csv_logger,TB])

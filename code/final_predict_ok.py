@@ -34,12 +34,10 @@ print('Load saved {} test data'.format(dataname))
 # y_test = pkl.load(open('data/{}_y_test.np'.format(dataname), 'rb')) 
 
 X_train = pkl.load(open('data/{}_x_train_placebo.np'.format(dataname), 'rb')) 
-X_val = pkl.load(open('data/{}_x_val_placebo.np'.format(dataname), 'rb')) 
-X_test = pkl.load(open('data/{}_x_test.np'.format(dataname), 'rb')) 
+X_test = pkl.load(open('data/{}_x_test_placebo.np'.format(dataname), 'rb')) 
 
 y_train = pkl.load(open('data/{}_y_train_placebo.np'.format(dataname), 'rb')) 
-y_val = pkl.load(open('data/{}_y_val_placebo.np'.format(dataname), 'rb')) 
-y_test = pkl.load(open('data/{}_y_test.np'.format(dataname), 'rb')) 
+y_test = pkl.load(open('data/{}_y_test_placebo.np'.format(dataname), 'rb')) 
 
 # Define network structure
 
@@ -60,14 +58,12 @@ initialization = 'glorot_normal'
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
-X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 X_test= np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (y_train.shape[0], output_dim))
-y_val = np.resize(y_val, (y_val.shape[0], output_dim))
 y_test = np.resize(y_test, (y_test.shape[0], output_dim))
 
 # Initiate sequential model
@@ -113,9 +109,3 @@ print('Generate predictions on training set')
 y_pred_train = model.predict(X_train, batch_size=batch_size, verbose=1) 
 
 np.savetxt("{}-{}-train.csv".format(filename,dataname), y_pred_train, delimiter=",")
-
-print('Generate predictions on validation set')
-
-y_pred_val = model.predict(X_val, batch_size=batch_size, verbose=1) 
-
-np.savetxt("{}-{}-train.csv".format(filename,dataname), y_pred_val delimiter=",")
