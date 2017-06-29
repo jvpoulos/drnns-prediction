@@ -58,15 +58,19 @@ initialization = 'glorot_normal'
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
+X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
 
 print('X_train shape:', X_train.shape)
+print('X_val shape:', X_val.shape)
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (y_train.shape[0], output_dim))
+y_val = np.resize(y_val, (y_val.shape[0], output_dim))
 
 print('y_train shape:', y_train.shape)
+print('y_val shape:', y_val.shape)
 
 # Initiate sequential model
 
