@@ -27,17 +27,11 @@ print(device_lib.list_local_devices())
 dataname = sys.argv[-1]
 print('Load saved {} test data'.format(dataname))
 
-# X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) 
-# X_test = pkl.load(open('data/{}_x_test.np'.format(dataname), 'rb')) 
+X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) 
+X_test = pkl.load(open('data/{}_x_test.np'.format(dataname), 'rb')) 
 
-# y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
-# y_test = pkl.load(open('data/{}_y_test.np'.format(dataname), 'rb')) 
-
-X_train = pkl.load(open('data/{}_x_train_placebo.np'.format(dataname), 'rb')) 
-X_test = pkl.load(open('data/{}_x_test_placebo.np'.format(dataname), 'rb')) 
-
-y_train = pkl.load(open('data/{}_y_train_placebo.np'.format(dataname), 'rb')) 
-y_test = pkl.load(open('data/{}_y_test_placebo.np'.format(dataname), 'rb')) 
+y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
+y_test = pkl.load(open('data/{}_y_test.np'.format(dataname), 'rb')) 
 
 # Define network structure
 
@@ -102,7 +96,7 @@ y_pred_test = model.predict(X_test, batch_size=batch_size, verbose=1) # generate
 
 np.savetxt("{}-{}-test.csv".format(filename,dataname), y_pred_test, delimiter=",")
 
-# Get fits on training set/ validation sets for plots
+# Get fits on training set for plots
 
 print('Generate predictions on training set')
 
