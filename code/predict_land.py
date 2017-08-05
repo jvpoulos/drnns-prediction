@@ -24,14 +24,15 @@ print(device_lib.list_local_devices())
 
 # Load saved data
 
-dataname = sys.argv[-1]
+analysis = sys.argv[-1] # 'treated' or 'control'
+dataname = sys.argv[-2]
 print('Load saved {} test data'.format(dataname))
 
-X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) 
-X_test = pkl.load(open('data/{}_x_test.np'.format(dataname), 'rb')) 
+X_train = pkl.load(open('data/{}_x_train_{}.np'.format(dataname,analysis), 'rb')) 
+X_test = pkl.load(open('data/{}_x_test_{}.np'.format(dataname,analysis), 'rb')) 
 
-y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
-y_test = pkl.load(open('data/{}_y_test.np'.format(dataname), 'rb')) 
+y_train = pkl.load(open('data/{}_y_train_{}.np'.format(dataname,analysis), 'rb')) 
+y_test = pkl.load(open('data/{}_y_test_{}.np'.format(dataname,analysis), 'rb')) 
 
 # Define network structure
 

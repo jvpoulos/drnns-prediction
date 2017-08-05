@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from utils import set_trace
 
-dataname = sys.argv[-1]
+dataname = sys.argv[-2]
+
+analysis= sys.argv[-1]
 
 # Read training log
 history = np.genfromtxt(sys.argv[-2], names=True, delimiter=",")
@@ -14,4 +16,4 @@ plt.title(dataname)
 plt.ylabel('Mean absolute error')
 plt.xlabel('Epoch')
 plt.legend(['Training set'], loc='upper left')
-plt.savefig('results/land-plots/mae-{}'.format(dataname))
+plt.savefig('results/land-plots/mae-{}-{}'.format(dataname,analysis))

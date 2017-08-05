@@ -15,7 +15,7 @@ from keras.optimizers import Adadelta
 
 # Select gpu
 import os
-gpu = sys.argv[-3]
+gpu = sys.argv[-4]
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"]= "{}".format(gpu)
 
@@ -24,16 +24,17 @@ print(device_lib.list_local_devices())
 
 # Load saved data
 
-dataname = sys.argv[-1]
+analysis = sys.argv[-1] # 'treated' or 'control'
+dataname = sys.argv[-2]
 print('Load saved {} data'.format(dataname))
 
-X_train = pkl.load(open('data/{}_x_train.np'.format(dataname), 'rb')) 
+X_train = pkl.load(open('data/{}_x_train_{}.np'.format(dataname,analysis), 'rb')) 
 
-y_train = pkl.load(open('data/{}_y_train.np'.format(dataname), 'rb')) 
+y_train = pkl.load(open('data/{}_y_train_{}.np'.format(dataname,analysis), 'rb')) 
 
 # Define network structure
 
-epochs = int(sys.argv[-2])
+epochs = int(sys.argv[-3])
 nb_timesteps = 1
 nb_features = X_train.shape[1]
 output_dim = 1
