@@ -26,7 +26,7 @@ print(device_lib.list_local_devices())
 
 analysis = sys.argv[-1] # 'treated' or 'control'
 dataname = sys.argv[-2]
-print('Load saved {} data'.format(dataname))
+print('Load saved {} data for analysis on {}'.format(dataname, analysis))
 
 X_train = pkl.load(open('data/{}_x_train_{}.np'.format(dataname,analysis), 'rb')) 
 
