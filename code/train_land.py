@@ -86,7 +86,7 @@ model.compile(optimizer=Adadelta,
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/land-weights/weights-{mean_absolute_error:.0f}.hdf5"
+filepath="results/land-weights/weights-{mean_absolute_error:.1f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 TB = TensorBoard(log_dir='results/logs', histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
