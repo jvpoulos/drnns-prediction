@@ -15,7 +15,7 @@ from keras.optimizers import Adadelta
 
 # Select gpu
 import os
-gpu = sys.argv[-3]
+gpu = sys.argv[-4]
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"]= "{}".format(gpu)
 
@@ -76,7 +76,7 @@ model.add(Dense(output_dim,
   	activity_regularizer=regularizers.l1(penalty)))
 
 # Load weights
-filename = sys.argv[-2]
+filename = sys.argv[-3]
 model.load_weights(filename)
 
 # Configure learning process
