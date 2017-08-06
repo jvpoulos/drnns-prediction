@@ -10,7 +10,7 @@ title = sys.argv[-2]
 analysis= sys.argv[-1]
 
 # Read training log
-history = np.genfromtxt(datname, names=True, delimiter=",")
+history = np.genfromtxt(dataname, names=True, delimiter=",")
 
 # Summarize history for MAE
 plt.plot(history['mean_absolute_error'])
