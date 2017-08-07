@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
-from keras.optimizers import Adagrad
+from keras.optimizers import Adam
 
 # Select gpu
 import os
@@ -70,7 +70,6 @@ model = Sequential()
 model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
 model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
 model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
-model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout)) 
 model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
 model.add(Dense(output_dim, 
   activation=activation,
@@ -79,7 +78,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-model.compile(optimizer=Adagrad(lr=0.1),
+model.compile(optimizer=Adam(lr=0.001),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
