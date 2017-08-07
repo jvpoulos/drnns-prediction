@@ -43,7 +43,7 @@ output_dim = 1
 
 dropout = 0.5
 penalty = 0
-batch_size = 600 # train network over entire time-series
+batch_size = 128 
 nb_hidden = 256
 activation = 'linear'
 initialization = 'glorot_normal'
@@ -78,9 +78,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-Adadelta = Adadelta(clipnorm=5.) # Clip parameter gradients to a maximum norm of 5
-
-model.compile(optimizer=Adadelta,
+model.compile(optimizer=Adadelta(lr=2),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
