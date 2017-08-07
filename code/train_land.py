@@ -43,7 +43,7 @@ output_dim = 1
 
 dropout = 0.5
 penalty = 0
-batch_size = 128
+batch_size = 600 # train network over entire time-series
 nb_hidden = 256
 activation = 'linear'
 initialization = 'glorot_normal'
@@ -100,5 +100,5 @@ model.fit(X_train,
   batch_size=batch_size,
   verbose=1,
   epochs=epochs,
-  shuffle=True,
+  shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
   callbacks=[checkpointer,csv_logger,TB])
