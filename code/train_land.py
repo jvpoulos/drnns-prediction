@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
-from keras.optimizers import Adam
+from keras.optimizers import Adamax
 
 # Select gpu
 import os
@@ -81,7 +81,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-model.compile(optimizer=Adam(lr=10),
+model.compile(optimizer=Adamax(lr=0.002),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
