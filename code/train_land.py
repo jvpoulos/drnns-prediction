@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
-from keras.optimizers import Adadelta
+from keras.optimizers import Adagrad
 
 # Select gpu
 import os
@@ -78,7 +78,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-model.compile(optimizer=Adadelta(lr=2),
+model.compile(optimizer=Adagrad(lr=0.01),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
