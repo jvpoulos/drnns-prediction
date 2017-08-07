@@ -42,8 +42,8 @@ output_dim = 1
 # Define model parameters
 
 dropout = 0.5
-penalty = 0.001
-batch_size = 12
+penalty = 0
+batch_size = 64
 nb_hidden = 256
 activation = 'linear'
 initialization = 'glorot_normal'
