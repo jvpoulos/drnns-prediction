@@ -81,7 +81,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-model.compile(optimizer=Adam(lr=0.001),
+model.compile(optimizer=Adam(lr=10),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
