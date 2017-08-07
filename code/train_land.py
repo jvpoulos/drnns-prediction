@@ -43,7 +43,7 @@ output_dim = 1
 
 dropout = 0.5
 penalty = 0
-batch_size = 64
+batch_size = 128
 nb_hidden = 256
 activation = 'linear'
 initialization = 'glorot_normal'
