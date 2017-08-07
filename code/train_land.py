@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
-from keras.optimizers import Adam
+from keras.optimizers import RMSprop
 
 # Select gpu
 import os
@@ -68,10 +68,9 @@ print('Initializing model')
 
 model = Sequential()
 model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # embedding for variable input lengths
-model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization))  
-model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization))  
-model.add(LSTM(nb_hidden, kernel_initializer=initialization))  
-model.add(Dropout(dropout)) 
+model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
+model.add(LSTM(nb_hidden, kernel_initializer=initialization, dropout=dropout, recurrent_dropout=dropout))  
 model.add(Dense(output_dim, 
   activation=activation,
   kernel_regularizer=regularizers.l2(penalty),
@@ -79,7 +78,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-model.compile(optimizer=Adam(lr=0.001),
+model.compile(optimizer=RMSprop(lr=1),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
