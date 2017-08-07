@@ -78,7 +78,7 @@ model.add(Dense(output_dim,
 
 # Configure learning process
 
-model.compile(optimizer=Adagrad(lr=0.01),
+model.compile(optimizer=Adagrad(lr=0.1),
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
@@ -98,5 +98,5 @@ model.fit(X_train,
   batch_size=batch_size,
   verbose=1,
   epochs=epochs,
-  shuffle=False, # turn off shuffle to ensure training data patterns remain sequential
+  shuffle=True, 
   callbacks=[checkpointer,csv_logger,TB])
