@@ -45,7 +45,7 @@ dropout = 0.5
 penalty = 0
 batch_size = 128 
 nb_hidden = 256
-activation = 'sigmoid'
+activation = 'linear'
 initialization = 'glorot_normal'
 
 # # Reshape X to three dimensions
