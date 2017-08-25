@@ -23,7 +23,7 @@ sales_y_train_treated = pd.read_csv("data/patents-public/{}/treated/sales-y-trai
 sales_y_test_treated = pd.read_csv("data/patents-public/{}/treated/sales-y-test.csv".format(folder)) 
 
 # capacity
-print('Reading data in data/patents-public/{}'.format(folder))
+print('Reading data in data/capacity/{}'.format(folder))
 
 revpc_x_train_treated = pd.read_csv("data/capacity/{}/treated/revpc-x-train.csv".format(folder)) 
 revpc_x_test_treated = pd.read_csv("data/capacity/{}/treated/revpc-x-test.csv".format(folder)) 
