@@ -13,7 +13,7 @@ from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adamax
 
-from attention_with_context import AttentionWithContext
+from attention import RecurrentAttention1D
 
 # Select gpu
 import os
@@ -73,10 +73,10 @@ model.add(Masking(mask_value=0., input_shape=(nb_timesteps, nb_features))) # emb
 model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization))
 model.add(Dropout(dropout))  
 model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization)) 
-model.add(AttentionWithContext())
-model.add(Dropout(dropout))
+# model.add(Dropout(dropout))
 # model.add(LSTM(nb_hidden, kernel_initializer=initialization))
 # model.add(Dropout(dropout))  
+model.add(Attention())
 model.add(Dense(output_dim, 
   activation=activation,
   kernel_regularizer=regularizers.l2(penalty),
