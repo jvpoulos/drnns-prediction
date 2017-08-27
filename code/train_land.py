@@ -13,8 +13,6 @@ from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import regularizers
 from keras.optimizers import Adamax
 
-from attention import Attention
-
 # Select gpu
 import os
 gpu = sys.argv[-4]
@@ -74,11 +72,8 @@ model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initializati
 model.add(Dropout(dropout))  
 model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization)) 
 model.add(Dropout(dropout))  
-model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization)) 
-model.add(Dropout(dropout))
-# model.add(LSTM(nb_hidden, kernel_initializer=initialization))
-# model.add(Dropout(dropout))  
-model.add(Attention())
+model.add(LSTM(nb_hidden, kernel_initializer=initialization))
+model.add(Dropout(dropout))  
 model.add(Dense(output_dim, 
   activation=activation,
   kernel_regularizer=regularizers.l2(penalty),

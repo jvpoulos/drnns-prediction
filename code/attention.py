@@ -4,6 +4,8 @@ from keras.layers.core import Layer
 from keras import initializers, regularizers, constraints  
 from keras import backend as K
 
+import tensorflow as tf
+
 def dot_product(x, kernel):
     """
     Wrapper for dot product operation, in order to be compatible with both
@@ -103,10 +105,9 @@ class Attention(Layer):
         a /= K.cast(K.sum(a, axis=1, keepdims=True) + K.epsilon(), K.floatx())
 
         a = K.expand_dims(a)
+
         weighted_input = x * a
         return K.sum(weighted_input, axis=1)
 
     def compute_output_shape(self, input_shape):
         return input_shape[0], input_shape[-1]
-
-    
