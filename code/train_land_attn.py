@@ -111,10 +111,10 @@ model.compile(optimizer=Adam(lr=0.001, clipnorm=5.), # Clip parameter gradients 
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/land-weights/weights-{val_mean_absolute_error:.2f}.hdf5" 
+filepath="results/land/{}/weights-{val_mean_absolute_error:.2f}.hdf5".format(dataname) 
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
-TB = TensorBoard(log_dir='results/logs', histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+TB = TensorBoard(log_dir='results/land/{}'.format(dataname), histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
 # Train model
 print('Training')
@@ -137,9 +137,9 @@ attention_vector = np.mean(attention_vector, axis=0).squeeze() # mean across # v
 print('attention =', attention_vector)
 print('attention shape =', attention_vector.shape)
 
-np.savetxt('results/land-weights/attention.csv', attention_vector, delimiter=',') # save attentions to file
+np.savetxt('results/land/{}/attention.csv'.format(dataname), attention_vector, delimiter=',') # save attentions to file
 
 # plot
 
 pd.DataFrame(attention_vector, columns=['attention (%)']).plot(kind='bar',title='Attention as function of features')
-plt.savefig('results/land-weights/attention.png')
+plt.savefig('results/land/{}/attention.png'.format(dataname))
