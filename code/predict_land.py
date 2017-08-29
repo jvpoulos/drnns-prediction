@@ -7,6 +7,7 @@ import math
 import numpy as np
 import cPickle as pkl
 
+from keras.utils.visualize_util import plot, model_to_dot
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation
 from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger, TensorBoard
@@ -74,6 +75,14 @@ model.add(Dense(output_dim,
   	activation=activation,
   	kernel_regularizer=regularizers.l2(penalty),
   	activity_regularizer=regularizers.l1(penalty)))
+
+# Visualize model
+
+plot(m, to_file='results/final_model.png', # Plot graph of model
+  show_shapes = True,
+  show_layer_names = False)
+
+model_to_dot(m,show_shapes=True,show_layer_names = False).write('results/final_model.dot', format='raw', prog='dot') # write to dot file
 
 # Load weights
 filename = sys.argv[-3]

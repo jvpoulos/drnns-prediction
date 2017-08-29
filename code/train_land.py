@@ -42,7 +42,7 @@ output_dim = 1
 # Define model parameters
 
 dropout = 0.5
-penalty = 0
+penalty = 0.01
 batch_size = 32
 nb_hidden = 256
 activation = 'linear'
@@ -73,7 +73,6 @@ model.add(Dropout(dropout))
 model.add(LSTM(nb_hidden, return_sequences=True, kernel_initializer=initialization)) 
 model.add(Dropout(dropout))  
 model.add(LSTM(nb_hidden, kernel_initializer=initialization))
-model.add(Dropout(dropout))  
 model.add(Dense(output_dim, 
   activation=activation,
   kernel_regularizer=regularizers.l2(penalty),
