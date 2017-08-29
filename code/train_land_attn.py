@@ -111,7 +111,7 @@ model.compile(optimizer=Adam(lr=0.001, clipnorm=5.), # Clip parameter gradients 
 
 # Prepare model checkpoints and callbacks
 
-filepath="results/land/{}/weights-{val_mean_absolute_error:.2f}.hdf5".format(dataname) 
+filepath="results/land/{}".format(dataname) + "/weights-{val_mean_absolute_error:.2f}.hdf5"
 checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
 
 TB = TensorBoard(log_dir='results/land/{}'.format(dataname), histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
