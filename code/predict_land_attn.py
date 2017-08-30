@@ -1,6 +1,4 @@
-# Softmax mask inside the network
-# Gives normalized distribution of the importance of each time step (or unit) regarding an input.
-# https://github.com/philipperemy/keras-attention-mechanism
+## Load best checkpointed model and make predictions
 
 from __future__ import print_function
 
@@ -15,6 +13,7 @@ import cPickle as pkl
 import pandas as pd
 
 from keras import backend as K
+# from keras.utils.vis_utils import plot_model, model_to_dot
 from keras.models import Sequential, Model
 from keras.layers import LSTM, Dense, Masking, Dropout, Activation, Permute, Reshape, Input, Flatten, merge
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
@@ -40,13 +39,14 @@ print('Load saved {} data for analysis on {}'.format(dataname, analysis))
 
 X_train = pkl.load(open('data/{}_x_train_{}.np'.format(dataname,analysis), 'rb')) 
 X_val = pkl.load(open('data/{}_x_val_{}.np'.format(dataname,analysis), 'rb'))
+X_test = pkl.load(open('data/{}_x_test_{}.np'.format(dataname,analysis), 'rb')) 
 
 y_train = pkl.load(open('data/{}_y_train_{}.np'.format(dataname,analysis), 'rb')) 
 y_val = pkl.load(open('data/{}_y_val_{}.np'.format(dataname,analysis), 'rb')) 
+y_test = pkl.load(open('data/{}_y_test_{}.np'.format(dataname,analysis), 'rb')) 
 
 # Define network structure
 
-epochs = int(sys.argv[-3])
 nb_timesteps = 1
 nb_features = X_train.shape[1]
 output_dim = 1
@@ -64,23 +64,15 @@ initialization = 'glorot_normal'
 # # Should have shape (batch_size, nb_timesteps, nb_features)
 
 X_train = np.resize(X_train, (X_train.shape[0], nb_timesteps, X_train.shape[1]))
-
-print('X_train shape:', X_train.shape)
-
 X_val = np.resize(X_val, (X_val.shape[0], nb_timesteps, X_val.shape[1]))
-
-print('X_val shape:', X_val.shape)
+X_test= np.resize(X_test, (X_test.shape[0], nb_timesteps, X_test.shape[1]))
 
 # Reshape y to two dimensions
 # Should have shape (batch_size, output_dim)
 
 y_train = np.resize(y_train, (y_train.shape[0], output_dim))
-
-print('y_train shape:', y_train.shape)
-
 y_val = np.resize(y_val, (y_val.shape[0], output_dim))
-
-print('y_val shape:', y_val.shape)
+y_test = np.resize(y_test, (y_test.shape[0], output_dim))
 
 # Initiate sequential model
 
@@ -103,28 +95,59 @@ model = Model(input=[inputs], output=output)
 
 print(model.summary())
 
+# Visualize model
+
+# plot_model(model, to_file='results/land/{}/model.png'.format(dataname), # Plot graph of model
+#   show_shapes = True,
+#   show_layer_names = False)
+
+# model_to_dot(model,show_shapes=True,show_layer_names = False).write('results/land/{}/model.dot'.format(dataname), format='raw', prog='dot') # write to dot file
+
+# Load weights
+filename = sys.argv[-3]
+model.load_weights(filename)
+
 # Configure learning process
 
 model.compile(optimizer=Adam(lr=0.001, clipnorm=5.), # Clip parameter gradients to a maximum norm of 5
               loss='mean_absolute_error',
               metrics=['mean_absolute_error'])
 
-# Prepare model checkpoints and callbacks
+print("Created model and loaded weights from file")
 
-filepath="results/land/{}".format(dataname) + "/weights-{val_mean_absolute_error:.2f}.hdf5"
-checkpointer = ModelCheckpoint(filepath=filepath, verbose=0, save_best_only=False)
+# Evaluation 
 
-TB = TensorBoard(log_dir='results/land/{}'.format(dataname), histogram_freq=0, batch_size=batch_size, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+print('Generate predictions on test data')
 
-# Train model
-print('Training')
-csv_logger = CSVLogger('results/{}/training_log_{}.csv'.format(dataname,dataname), separator=',', append=True)
+y_pred_test = model.predict(X_test, batch_size=batch_size, verbose=1) # generate output predictions for test samples, batch-by-batch
 
-model.fit(X_train,
-  y_train,
-  batch_size=batch_size,
-  verbose=1,
-  epochs=epochs,
-  shuffle=True, 
-  callbacks=[checkpointer,csv_logger,TB],
-  validation_data=(X_val, y_val))
+np.savetxt("{}-{}-test.csv".format(filename,dataname), y_pred_test, delimiter=",")
+
+# Get fits on training and validation sets for plots
+
+print('Generate predictions on training set')
+
+y_pred_train = model.predict(X_train, batch_size=batch_size, verbose=1) 
+
+np.savetxt("{}-{}-train.csv".format(filename,dataname), y_pred_train, delimiter=",")
+
+print('Generate predictions on validation set')
+
+y_pred_val = model.predict(X_val, batch_size=batch_size, verbose=1) 
+
+np.savetxt("{}-{}-val.csv".format(filename,dataname), y_pred_val, delimiter=",")
+
+# Get attention weights on validation features
+attention_vector = get_activations(model, X_val, print_shape_only=True, layer_name='attention_vec')[0]
+
+attention_vector = np.mean(attention_vector, axis=0).squeeze() # mean across # val samples
+
+print('attention =', attention_vector)
+print('attention shape =', attention_vector.shape)
+
+np.savetxt('results/land/{}/attention.csv'.format(dataname), attention_vector, delimiter=',') # save attentions to file
+
+# # plot
+
+# pd.DataFrame(attention_vector, columns=['attention (%)']).plot(kind='bar',title='Attention as function of features')
+# plt.savefig('results/land/{}/attention.png'.format(dataname))
