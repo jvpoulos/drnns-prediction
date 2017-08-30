@@ -118,7 +118,7 @@ TB = TensorBoard(log_dir='results/land/{}'.format(dataname), histogram_freq=0, b
 
 # Train model
 print('Training')
-csv_logger = CSVLogger('results/{}/training_log_{}.csv'.format(dataname,dataname), separator=',', append=True)
+csv_logger = CSVLogger('results/land/{}/training_log_{}.csv'.format(dataname,dataname), separator=',', append=True)
 
 model.fit(X_train,
   y_train,
