@@ -53,6 +53,17 @@ edpc_y_train_treated = pd.read_csv("data/capacity/{}/treated/edpc-y-train.csv".f
 edpc_y_val_treated = pd.read_csv("data/capacity/{}/treated/edpc-y-val.csv".format(folder)) 
 edpc_y_test_treated = pd.read_csv("data/capacity/{}/treated/edpc-y-test.csv".format(folder)) 
 
+# railroads
+print('Reading data in data/railroads/{}'.format(folder))
+
+track2_x_train_treated = pd.read_csv("data/railroads/{}/treated/track2-x-train.csv".format(folder)) 
+track2_x_val_treated = pd.read_csv("data/railroads/{}/treated/track2-x-val.csv".format(folder))
+track2_x_test_treated = pd.read_csv("data/railroads/{}/treated/track2-x-test.csv".format(folder)) 
+
+track2_y_train_treated = pd.read_csv("data/railroads/{}/treated/track2-y-train.csv".format(folder)) 
+track2_y_val_treated = pd.read_csv("data/railroads/{}/treated/track2-y-val.csv".format(folder)) 
+track2_y_test_treated = pd.read_csv("data/railroads/{}/treated/track2-y-test.csv".format(folder)) 
+
 ## Save train and test sets to disk
 print('Save to disk')
 
@@ -97,3 +108,12 @@ pkl.dump(edpc_x_test_treated, open('data/edpc_x_test_treated.np', 'wb'))
 pkl.dump(edpc_y_train_treated, open('data/edpc_y_train_treated.np', 'wb'))
 pkl.dump(edpc_y_val_treated, open('data/edpc_y_val_treated.np', 'wb'))
 pkl.dump(edpc_y_test_treated, open('data/edpc_y_test_treated.np', 'wb'))
+
+# railroads
+pkl.dump(track2_x_train_treated, open('data/track2_x_train_treated.np', 'wb')) 
+pkl.dump(track2_x_val_treated, open('data/track2_x_val_treated.np', 'wb'))
+pkl.dump(track2_x_test_treated, open('data/track2_x_test_treated.np', 'wb'))
+
+pkl.dump(track2_y_train_treated, open('data/track2_y_train_treated.np', 'wb'))
+pkl.dump(track2_y_val_treated, open('data/track2_y_val_treated.np', 'wb'))
+pkl.dump(track2_y_test_treated, open('data/track2_y_test_treated.np', 'wb'))
