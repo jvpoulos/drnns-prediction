@@ -54,7 +54,7 @@ output_dim = 1
 # Define model parameters
 
 dropout = 0.8
-penalty = 0.02
+penalty = 0.05
 batch_size = 32
 nb_hidden = 256
 activation = 'linear'
@@ -97,8 +97,7 @@ dropout_1 = Dropout(dropout)(lstm_1)
 lstm_2 = LSTM(nb_hidden, kernel_initializer=initialization, return_sequences=False)(dropout_1)
 output = Dense(output_dim, 
       activation=activation,
-      kernel_regularizer=regularizers.l2(penalty),
-      activity_regularizer=regularizers.l1(penalty))(lstm_2)
+      kernel_regularizer=regularizers.l2(penalty))(lstm_2)
 model = Model(input=[inputs], output=output)
 
 print(model.summary())
