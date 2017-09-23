@@ -81,7 +81,7 @@ print('Initializing model')
 inputs = Input(shape=(nb_timesteps, nb_features,))
 a = Permute((2, 1))(inputs)
 a = Reshape((nb_features, nb_timesteps))(a)
-a = Dense(nb_timesteps, activation='softmax')(a)
+a = Dense(nb_timesteps, activation='sigmoid')(a)
 a_probs = Permute((2, 1), name='attention_vec')(a)
 output_attention_mul = merge([inputs, a_probs], name='attention_mul', mode='mul')
 lstm_1 = LSTM(nb_hidden, kernel_initializer=initialization, return_sequences=True)(output_attention_mul)
@@ -97,11 +97,11 @@ print(model.summary())
 
 # Visualize model
 
-plot_model(model, to_file='results/land/{}/model.png'.format(dataname), # Plot graph of model
-  show_shapes = False,
-  show_layer_names = False)
+# plot_model(model, to_file='results/land/{}/model.png'.format(dataname), # Plot graph of model
+#   show_shapes = False,
+#   show_layer_names = False)
 
-model_to_dot(model,show_shapes=True,show_layer_names = False).write('results/land/{}/model.dot'.format(dataname), format='raw', prog='dot') # write to dot file
+# model_to_dot(model,show_shapes=True,show_layer_names = False).write('results/land/{}/model.dot'.format(dataname), format='raw', prog='dot') # write to dot file
 
 # Load weights
 filename = sys.argv[-3]
@@ -140,7 +140,7 @@ np.savetxt("{}-{}-val.csv".format(filename,dataname), y_pred_val, delimiter=",")
 # Get attention weights on validation features
 attention_vector = get_activations(model, X_val, print_shape_only=True, layer_name='attention_vec')[0]
 
-# attention_vector = np.mean(attention_vector, axis=0).squeeze() # mean across # val samples
+attention_vector = np.mean(attention_vector, axis=0).squeeze() # mean across # val samples
 
 print('attention =', attention_vector)
 print('attention shape =', attention_vector.shape)
