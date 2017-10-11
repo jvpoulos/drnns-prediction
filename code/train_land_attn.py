@@ -53,8 +53,8 @@ output_dim = 1
 
 # Define model parameters
 
-dropout = 0.8
-penalty = 0.05
+dropout = 0.95
+penalty = 0.55
 batch_size = 32
 nb_hidden = 256
 activation = 'linear'
