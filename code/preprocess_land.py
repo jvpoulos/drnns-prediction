@@ -35,6 +35,44 @@ educpc_y_train_treated = pd.read_csv("data/capacity/{}/treated/educpc-y-train.cs
 educpc_y_val_treated = pd.read_csv("data/capacity/{}/treated/educpc-y-val.csv".format(folder)) 
 educpc_y_test_treated = pd.read_csv("data/capacity/{}/treated/educpc-y-test.csv".format(folder)) 
 
+print('Reading data in data/patents/{}'.format(folder))
+
+homesteads_x_train_treated = pd.read_csv("data/patents/{}/treated/homesteads-x-train.csv".format(folder)) 
+homesteads_x_val_treated = pd.read_csv("data/patents/{}/treated/homesteads-x-val.csv".format(folder))
+homesteads_x_test_treated = pd.read_csv("data/patents/{}/treated/homesteads-x-test.csv".format(folder)) 
+
+homesteads_y_train_treated = pd.read_csv("data/patents/{}/treated/homesteads-y-train.csv".format(folder)) 
+homesteads_y_val_treated = pd.read_csv("data/patents/{}/treated/homesteads-y-val.csv".format(folder)) 
+homesteads_y_test_treated = pd.read_csv("data/patents/{}/treated/homesteads-y-test.csv".format(folder)) 
+
+sales_x_train_treated = pd.read_csv("data/patents/{}/treated/sales-x-train.csv".format(folder)) 
+sales_x_val_treated = pd.read_csv("data/patents/{}/treated/sales-x-val.csv".format(folder))
+sales_x_test_treated = pd.read_csv("data/patents/{}/treated/sales-x-test.csv".format(folder)) 
+
+sales_y_train_treated = pd.read_csv("data/patents/{}/treated/sales-y-train.csv".format(folder)) 
+sales_y_val_treated = pd.read_csv("data/patents/{}/treated/sales-y-val.csv".format(folder)) 
+sales_y_test_treated = pd.read_csv("data/patents/{}/treated/sales-y-test.csv".format(folder)) 
+
+
+## Save train and test sets to disk
+print('Saving data in data/patents/{}'.format(folder))
+
+# patents
+pkl.dump(homesteads_x_train_treated, open('data/homesteads_x_train_treated.np', 'wb')) 
+pkl.dump(homesteads_x_val_treated, open('data/homesteads_x_val_treated.np', 'wb'))
+pkl.dump(homesteads_x_test_treated, open('data/homesteads_x_test_treated.np', 'wb'))
+
+pkl.dump(homesteads_y_train_treated, open('data/homesteads_y_train_treated.np', 'wb'))
+pkl.dump(homesteads_y_val_treated, open('data/homesteads_y_val_treated.np', 'wb'))
+pkl.dump(homesteads_y_test_treated, open('data/homesteads_y_test_treated.np', 'wb'))
+
+pkl.dump(sales_x_train_treated, open('data/sales_x_train_treated.np', 'wb')) 
+pkl.dump(sales_x_val_treated, open('data/sales_x_val_treated.np', 'wb'))
+pkl.dump(sales_x_test_treated, open('data/sales_x_test_treated.np', 'wb'))
+
+pkl.dump(sales_y_train_treated, open('data/sales_y_train_treated.np', 'wb'))
+pkl.dump(sales_y_val_treated, open('data/sales_y_val_treated.np', 'wb'))
+pkl.dump(sales_y_test_treated, open('data/sales_y_test_treated.np', 'wb'))
 
 ## Save train and test sets to disk
 print('Saving data in data/capacity/{}'.format(folder))
@@ -59,7 +97,3 @@ pkl.dump(exppc_y_test_treated, open('data/exppc_y_test_treated.np', 'wb'))
 pkl.dump(educpc_x_train_treated, open('data/educpc_x_train_treated.np', 'wb')) 
 pkl.dump(educpc_x_val_treated, open('data/educpc_x_val_treated.np', 'wb'))
 pkl.dump(educpc_x_test_treated, open('data/educpc_x_test_treated.np', 'wb'))
-
-pkl.dump(educpc_y_train_treated, open('data/educpc_y_train_treated.np', 'wb'))
-pkl.dump(educpc_y_val_treated, open('data/educpc_y_val_treated.np', 'wb'))
-pkl.dump(educpc_y_test_treated, open('data/educpc_y_test_treated.np', 'wb'))
