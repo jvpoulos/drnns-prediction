@@ -53,6 +53,28 @@ sales_y_train_treated = pd.read_csv("data/patents/{}/treated/sales-y-train.csv".
 sales_y_val_treated = pd.read_csv("data/patents/{}/treated/sales-y-val.csv".format(folder)) 
 sales_y_test_treated = pd.read_csv("data/patents/{}/treated/sales-y-test.csv".format(folder)) 
 
+print('Reading data in data/railroads/{}'.format(folder))
+
+acccess_x_train_treated = pd.read_csv("data/railroads/{}/treated/acccess-x-train.csv".format(folder)) 
+acccess_x_val_treated = pd.read_csv("data/railroads/{}/treated/acccess-x-val.csv".format(folder))
+acccess_x_test_treated = pd.read_csv("data/railroads/{}/treated/acccess-x-test.csv".format(folder)) 
+
+acccess_y_train_treated = pd.read_csv("data/railroads/{}/treated/acccess-y-train.csv".format(folder)) 
+acccess_y_val_treated = pd.read_csv("data/railroads/{}/treated/acccess-y-val.csv".format(folder)) 
+acccess_y_test_treated = pd.read_csv("data/railroads/{}/treated/acccess-y-test.csv".format(folder)) 
+
+
+## Save train and test sets to disk
+print('Saving data in data/railroads/{}'.format(folder))
+
+# railroads
+pkl.dump(acccess_x_train_treated, open('data/acccess_x_train_treated.np', 'wb')) 
+pkl.dump(acccess_x_val_treated, open('data/acccess_x_val_treated.np', 'wb'))
+pkl.dump(acccess_x_test_treated, open('data/acccess_x_test_treated.np', 'wb'))
+
+pkl.dump(acccess_y_train_treated, open('data/acccess_y_train_treated.np', 'wb'))
+pkl.dump(acccess_y_val_treated, open('data/acccess_y_val_treated.np', 'wb'))
+pkl.dump(acccess_y_test_treated, open('data/acccess_y_test_treated.np', 'wb'))
 
 ## Save train and test sets to disk
 print('Saving data in data/patents/{}'.format(folder))
