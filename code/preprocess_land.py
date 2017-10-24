@@ -119,3 +119,7 @@ pkl.dump(exppc_y_test_treated, open('data/exppc_y_test_treated.np', 'wb'))
 pkl.dump(educpc_x_train_treated, open('data/educpc_x_train_treated.np', 'wb')) 
 pkl.dump(educpc_x_val_treated, open('data/educpc_x_val_treated.np', 'wb'))
 pkl.dump(educpc_x_test_treated, open('data/educpc_x_test_treated.np', 'wb'))
+
+pkl.dump(educpc_y_train_treated, open('data/educpc_y_train_treated.np', 'wb')) 
+pkl.dump(educpc_y_val_treated, open('data/educpc_y_val_treated.np', 'wb'))
+pkl.dump(educpc_y_test_treated, open('data/educpc_y_test_treated.np', 'wb'))
